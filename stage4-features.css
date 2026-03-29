@@ -1,0 +1,348 @@
+/* ══════════════════════════════════════════════════
+   STAGE 4 FEATURES
+   1. Progress Checklist
+   2. Copy Code Button
+   3. Expandable Tool Detail
+══════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────
+   1. PROGRESS CHECKLIST
+───────────────────────────────────────────────── */
+.s4-checklist-bar {
+  background: linear-gradient(160deg, rgba(7,22,42,0.98) 0%, rgba(4,12,26,1) 100%);
+  border: 1px solid rgba(255,152,0,0.25);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.s4-checklist-bar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff9800, transparent);
+}
+
+.s4-checklist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.s4-checklist-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ff9800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.s4-checklist-title::before { content: '📋'; font-size: 0.9rem; }
+
+.s4-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.s4-progress-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 80px;
+}
+.s4-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff9800, #ffd54f);
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 0 8px rgba(255,152,0,0.4);
+  width: 0%;
+}
+.s4-progress-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  color: #ff9800;
+  white-space: nowrap;
+  min-width: 44px;
+  text-align: right;
+}
+
+.s4-clear-btn {
+  background: transparent;
+  border: 1px solid rgba(239,83,80,0.2);
+  color: rgba(239,83,80,0.5);
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.s4-clear-btn:hover { border-color: #ef5350; color: #ef5350; }
+
+/* Checklist items */
+.s4-checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.s4-check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(0,15,35,0.5);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.s4-check-item:hover {
+  border-color: rgba(255,152,0,0.25);
+  background: rgba(255,152,0,0.04);
+}
+.s4-check-item.done {
+  border-color: rgba(76,175,80,0.2);
+  background: rgba(76,175,80,0.04);
+}
+
+.s4-checkbox {
+  width: 20px; height: 20px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+  font-size: 11px;
+  color: transparent;
+}
+.s4-check-item.done .s4-checkbox {
+  background: rgba(76,175,80,0.2);
+  border-color: #4caf50;
+  color: #4caf50;
+  box-shadow: 0 0 8px rgba(76,175,80,0.3);
+}
+
+.s4-check-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #8aaabb;
+  transition: color 0.2s;
+  flex: 1;
+  line-height: 1.3;
+}
+.s4-check-item.done .s4-check-label {
+  color: #4caf50;
+  text-decoration: line-through;
+  text-decoration-color: rgba(76,175,80,0.4);
+}
+
+.s4-check-step {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(255,152,0,0.5);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+/* Completed badge */
+.s4-completed-badge {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  margin-top: 12px;
+  background: rgba(76,175,80,0.08);
+  border: 1px solid rgba(76,175,80,0.3);
+  border-radius: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: #4caf50;
+  letter-spacing: 1px;
+  animation: badgePop 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.s4-completed-badge.show { display: flex; }
+@keyframes badgePop {
+  from { opacity:0; transform: scale(0.95) translateY(4px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────
+   2. COPY CODE BUTTON
+───────────────────────────────────────────────── */
+.s4-code-wrap {
+  position: relative;
+}
+.s4-copy-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  color: rgba(0,212,255,0.7);
+  padding: 4px 11px;
+  border-radius: 5px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 2;
+}
+.s4-copy-btn:hover {
+  background: rgba(0,212,255,0.15);
+  border-color: rgba(0,212,255,0.4);
+  color: #00d4ff;
+}
+.s4-copy-btn.copied {
+  background: rgba(76,175,80,0.15);
+  border-color: rgba(76,175,80,0.4);
+  color: #4caf50;
+}
+.s4-copy-icon { font-size: 10px; }
+
+/* ─────────────────────────────────────────────────
+   3. EXPANDABLE TOOL DETAIL
+───────────────────────────────────────────────── */
+.s4-tool-card {
+  background: rgba(0,15,35,0.5);
+  border: 1px solid var(--border, #0d3a6e);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.s4-tool-card:hover {
+  border-color: rgba(0,212,255,0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.s4-tool-card.expanded {
+  border-color: rgba(255,152,0,0.35);
+}
+
+.s4-tool-top {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.s4-tool-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.s4-tool-use {
+  font-size: 0.78rem;
+  color: var(--muted, #5a8aaa);
+  line-height: 1.5;
+}
+.s4-expand-icon {
+  font-size: 0.65rem;
+  color: rgba(0,212,255,0.4);
+  font-family: 'Share Tech Mono', monospace;
+  transition: transform 0.3s, color 0.2s;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border: 1px solid rgba(0,212,255,0.15);
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.s4-tool-card.expanded .s4-expand-icon {
+  transform: rotate(180deg);
+  color: #ff9800;
+  border-color: rgba(255,152,0,0.3);
+}
+
+/* Expandable panel */
+.s4-tool-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+  border-top: 0px solid transparent;
+}
+.s4-tool-card.expanded .s4-tool-detail {
+  max-height: 400px;
+  border-top: 1px solid rgba(255,152,0,0.15);
+}
+
+.s4-tool-detail-inner {
+  padding: 16px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.s4-tool-desc {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  color: #8aaabb;
+  line-height: 1.6;
+}
+
+.s4-tool-features {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.s4-tool-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.82rem;
+  color: #6a9ab8;
+  line-height: 1.4;
+}
+.s4-tool-feature::before {
+  content: '▸';
+  color: #ff9800;
+  font-size: 0.7rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.s4-tool-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: rgba(0,212,255,0.06);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 6px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  color: #00d4ff;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+.s4-tool-link:hover {
+  background: rgba(0,212,255,0.12);
+  border-color: rgba(0,212,255,0.4);
+  box-shadow: 0 0 12px rgba(0,212,255,0.1);
+}
+.s4-tool-link-icon { font-size: 0.7rem; }
+
+.s4-tool-pricing {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.5px;
+}

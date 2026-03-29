@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPT AI Lifecycle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="playwright-demo.css">
+<link rel="stylesheet" href="stage4-features.css">
+<link rel="stylesheet" href="checkly-demo.css">
+<link rel="stylesheet" href="checkly-dashboard.css">
+<link rel="stylesheet" href="axe-demo.css">
+<link rel="stylesheet" href="cc-demo.css">
+<script src="https://accounts.google.com/gsi/client"></script>
+</head>
+<body>
+
+<!-- ═══════════════════ SITE HEADER ═══════════════════ -->
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="site-logo" onclick="goTo('home')" style="cursor:pointer">
+      <span class="site-logo-icon">◈</span>
+      <span class="site-logo-text">FPT AI Lifecycle</span>
+      <span class="site-logo-version">v2.0</span>
+    </div>
+    <nav class="site-nav">
+      <a class="site-nav-link" onclick="goTo('home');return false;" href="#">Overview</a>
+      <a class="site-nav-link" onclick="goTo('stage-1');return false;" href="#">Discovery</a>
+      <a class="site-nav-link" onclick="goTo('stage-3');return false;" href="#">Engineering</a>
+      <a class="site-nav-link" onclick="goTo('stage-4');return false;" href="#">QA &amp; Testing</a>
+      <a class="site-nav-link" onclick="goTo('stage-5');return false;" href="#">Launch</a>
+    </nav>
+    <div class="site-header-actions">
+      <button class="btn-login" onclick="AuthModal.open('login')">Login</button>
+      <button class="btn-start" onclick="AuthModal.open('signup')">Start for free</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<main class="site-main">
+
+  <!-- ── HOME PAGE ── -->
+  <div id="page-home" class="page active">
+    <div class="home-wrap">
+
+      <!-- Hero -->
+      <section class="hero-section">
+
+        <h1>Discover. Build. Ship.<br><span class="hero-accent">And keep improving.</span></h1>
+        <p class="hero-desc">A complete AI-powered framework for building production-grade products — from market discovery to continuous iteration. 6 stages, real tools, actionable steps.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="AuthModal.open('signup')">Start for free</button>
+          <button class="btn-ghost" onclick="document.getElementById('stages-anchor').scrollIntoView({behavior:'smooth'})">View all stages</button>
+        </div>
+        <div class="hero-snippet" onclick="navigator.clipboard.writeText('npx create-ai-lifecycle@latest').then(()=>{this.querySelector('.hero-snippet-code').textContent='Copied!';setTimeout(()=>this.querySelector('.hero-snippet-code').textContent='npx create-ai-lifecycle@latest',1500)})">
+          <span class="hero-snippet-code">npx create-ai-lifecycle@latest</span>
+          <span class="hero-snippet-copy">⎘</span>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num">6</span>
+            <span class="hero-stat-label">Stages</span>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">12+</span>
+            <span class="hero-stat-label">AI Tools</span>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">7 wks</span>
+            <span class="hero-stat-label">Timeline</span>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">&gt;80%</span>
+            <span class="hero-stat-label">Test Coverage</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Timeline -->
+      <section class="timeline-section">
+        <div class="section-label">TIMELINE OVERVIEW</div>
+        <div class="timeline-bar">
+          <div class="tl-phase">
+            <span class="tl-dot"></span>
+            <span>Discovery &amp; Prototyping</span>
+            <span class="tl-weeks">Week 1–3</span>
+          </div>
+          <div class="tl-line"></div>
+          <div class="tl-phase">
+            <span class="tl-dot"></span>
+            <span>Engineering &amp; Testing</span>
+            <span class="tl-weeks">Week 3–6</span>
+          </div>
+          <div class="tl-line"></div>
+          <div class="tl-phase">
+            <span class="tl-dot"></span>
+            <span>Launch &amp; Improvement</span>
+            <span class="tl-weeks">Week 6+</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stage Cards -->
+      <section class="stages-section" id="stages-anchor">
+        <div class="section-label">ALL STAGES — click any card to explore</div>
+        <div class="cards-grid">
+
+          <div class="stage-card" data-stage="1" onclick="goTo('stage-1')">
+            <div class="card-glow"></div>
+            <div class="card-number">01</div>
+            <div class="card-icons">🔍 🧠 📊</div>
+            <div class="card-phase-label">DISCOVERY</div>
+            <div class="card-title">Market &amp; User<br>Research</div>
+            <div class="card-tools">
+              <span class="tool-badge purple">Perplexity</span>
+              <span class="tool-badge teal">Dovetail</span>
+            </div>
+            <div class="card-desc">Research the market and build detailed user personas using AI.</div>
+            <div class="card-output">
+              <span class="out-label">OUTPUT</span>
+              PRD + User Personas
+            </div>
+            <div class="card-weeks">Week 1–2</div>
+            <div class="card-arrow">→</div>
+          </div>
+
+          <div class="stage-card" data-stage="2" onclick="goTo('stage-2')">
+            <div class="card-glow"></div>
+            <div class="card-number">02</div>
+            <div class="card-icons">💡 ✏️ 🧪</div>
+            <div class="card-phase-label">IDEATION</div>
+            <div class="card-title">Rapid Prototyping<br>&amp; Validation</div>
+            <div class="card-tools">
+              <span class="tool-badge green">v0.dev</span>
+              <span class="tool-badge blue">Figma AI</span>
+            </div>
+            <div class="card-desc">Generate UI prototypes and validate ideas with real users instantly.</div>
+            <div class="card-output">
+              <span class="out-label">OUTPUT</span>
+              Validated Prototype
+            </div>
+            <div class="card-weeks">Week 2–3</div>
+            <div class="card-arrow">→</div>
+          </div>
+
+          <div class="stage-card" data-stage="3" onclick="goTo('stage-3')">
+            <div class="card-glow"></div>
+            <div class="card-number">03</div>
+            <div class="card-icons">⚙️ 💻 🔧</div>
+            <div class="card-phase-label">ENGINEERING</div>
+            <div class="card-title">Development &amp;<br>AI-Pair Coding</div>
+            <div class="card-tools">
+              <span class="tool-badge blue">Claude Code</span>
+              <span class="tool-badge">Copilot</span>
+            </div>
+            <div class="card-desc">Build production features with AI-pair coding and automated CI/CD.</div>
+            <div class="card-output">
+              <span class="out-label">OUTPUT</span>
+              Production-Ready Code
+            </div>
+            <div class="card-weeks">Week 3–6</div>
+            <div class="card-arrow">→</div>
+          </div>
+
+          <div class="stage-card" data-stage="4" onclick="goTo('stage-4')">
+            <div class="card-glow"></div>
+            <div class="card-number">04</div>
+            <div class="card-icons">✅ 🛡️ 🐛</div>
+            <div class="card-phase-label">QA &amp; TESTING</div>
+            <div class="card-title">Comprehensive<br>Automated Testing</div>
+            <div class="card-tools">
+              <span class="tool-badge green">Playwright</span>
+              <span class="tool-badge orange">Checkly</span>
+            </div>
+            <div class="card-desc">Automate full test coverage before every production deployment.</div>
+            <div class="card-output">
+              <span class="out-label">OUTPUT</span>
+              Test Coverage &gt;80%
+            </div>
+            <div class="card-weeks">Week 3–6</div>
+            <div class="card-arrow">→</div>
+          </div>
+
+          <div class="stage-card" data-stage="5" onclick="goTo('stage-5')">
+            <div class="card-glow"></div>
+            <div class="card-number">05</div>
+            <div class="card-icons">🚀 🚩 📡</div>
+            <div class="card-phase-label">LAUNCH</div>
+            <div class="card-title">Safe Deployment<br>via Feature Flags</div>
+            <div class="card-tools">
+              <span class="tool-badge orange">LaunchDarkly</span>
+              <span class="tool-badge purple">Datadog</span>
+            </div>
+            <div class="card-desc">Roll out incrementally from 5% to 100% with instant rollback capability.</div>
+            <div class="card-output">
+              <span class="out-label">OUTPUT</span>
+              Stable Production Release
+            </div>
+            <div class="card-weeks">Week 6+</div>
+            <div class="card-arrow">→</div>
+          </div>
+
+          <div class="stage-card" data-stage="6" onclick="goTo('stage-6')">
+            <div class="card-glow"></div>
+            <div class="card-number">06</div>
+            <div class="card-icons">📈 🔄 🎯</div>
+            <div class="card-phase-label">LEARN &amp; ITERATE</div>
+            <div class="card-title">Feedback Analysis<br>&amp; Optimization</div>
+            <div class="card-tools">
+              <span class="tool-badge purple">Mixpanel</span>
+              <span class="tool-badge teal">Amplitude</span>
+            </div>
+            <div class="card-desc">Use AI to analyze feedback and continuously improve the product.</div>
+            <div class="card-output">
+              <span class="out-label">OUTPUT</span>
+              Next Iteration Backlog
+            </div>
+            <div class="card-weeks">Week 6+</div>
+            <div class="card-arrow">→</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Principles -->
+      <section class="principles-section">
+        <div class="section-label">CORE PRINCIPLES</div>
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="p-icon">🤝</div>
+            <div>
+              <div class="p-title">AI Assists, Humans Decide</div>
+              <div class="p-desc">Always keep humans at the center for final strategic decisions. AI is a force-multiplier, not the decision-maker.</div>
+            </div>
+          </div>
+          <div class="principle-card">
+            <div class="p-icon">🚢</div>
+            <div>
+              <div class="p-title">"Ship Small, Ship Often"</div>
+              <div class="p-desc">Use Feature Flags to release incrementally (5% → 100%) to minimize risk and enable fast rollback.</div>
+            </div>
+          </div>
+          <div class="principle-card">
+            <div class="p-icon">🧰</div>
+            <div>
+              <div class="p-title">Avoid Tool Sprawl</div>
+              <div class="p-desc">Limit to max 2 AI tools per phase to avoid waste and keep the workflow focused and efficient.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ── STAGE DETAIL PAGE ── -->
+  <div id="page-stage" class="page">
+    <div class="detail-wrap">
+      <div class="detail-breadcrumb">
+        <button class="back-btn" onclick="goTo('home')">← Back to Overview</button>
+      </div>
+      <div id="stage-content"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════ SITE FOOTER ═══════════════════ -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-left">
+      <span class="footer-logo">◈ FPT AI Lifecycle</span>
+      <span class="footer-sep">·</span>
+      <span class="footer-tagline">FPT · AI-powered product engineering playbook</span>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" onclick="goTo('stage-1');return false;" href="#">Discovery</a>
+      <a class="footer-link" onclick="goTo('stage-2');return false;" href="#">Ideation</a>
+      <a class="footer-link" onclick="goTo('stage-3');return false;" href="#">Engineering</a>
+      <a class="footer-link" onclick="goTo('stage-4');return false;" href="#">QA</a>
+      <a class="footer-link" onclick="goTo('stage-5');return false;" href="#">Launch</a>
+      <a class="footer-link" onclick="goTo('stage-6');return false;" href="#">Iterate</a>
+    </div>
+    <div class="footer-right">
+      <span class="footer-built">© 2026 FPT</span>
+    </div>
+  </div>
+</footer>
+
+
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="playwright-demo.js"></script>
+<script src="stage4-features.js"></script>
+<script src="checkly-demo.js"></script>
+<script src="checkly-dashboard.js"></script>
+<script src="axe-demo.js"></script>
+<script src="cc-demo.js"></script>
+
+<div id="g_id_onload"
+  data-client_id="131005154645-haukgraip5cg9407dotn9d0mon0vv2af.apps.googleusercontent.com"
+  data-callback="FPTAuth.handleGoogleResponse"
+  data-auto_prompt="false">
+</div>
+
+<script>
+// ── Google OAuth Integration ──
+window.addEventListener('load', function() {
+
+FPTAuth.googleLogin = function() {
+  if (typeof google === 'undefined') {
+    alert('Google Sign-In is still loading. Please wait a moment and try again.');
+    return;
+  }
+  const btn = event && event.target ? event.target.closest('.fpt-oauth-btn') : null;
+  if (btn) {
+    btn.classList.add('loading');
+    btn.innerHTML = '<span style="opacity:.6">Connecting to Google...</span>';
+  }
+  google.accounts.id.initialize({
+    client_id: '131005154645-haukgraip5cg9407dotn9d0mon0vv2af.apps.googleusercontent.com',
+    callback: FPTAuth.handleGoogleResponse,
+    auto_select: false,
+    cancel_on_tap_outside: true,
+    ux_mode: 'popup',
+  });
+  google.accounts.id.prompt(function(notification) {
+    if (btn) {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Continue with Google';
+    }
+  });
+};
+
+FPTAuth.handleGoogleResponse = function(response) {
+  // Decode JWT token
+  const payload = JSON.parse(atob(response.credential.split('.')[1]));
+  const user = {
+    name:    payload.name,
+    email:   payload.email,
+    picture: payload.picture,
+    sub:     payload.sub,
+  };
+
+  // Save to sessionStorage
+  sessionStorage.setItem('fpt_user', JSON.stringify(user));
+
+  // Close modal & show success
+  FPTAuth.close();
+  FPTAuth._showUserInHeader(user);
+};
+
+FPTAuth._showUserInHeader = function(user) {
+  const actions = document.querySelector('.site-header-actions');
+  if (!actions) return;
+  actions.innerHTML = `
+    <div class="fpt-user-chip">
+      <img src="${user.picture}" class="fpt-user-avatar" alt="${user.name}" referrerpolicy="no-referrer">
+      <span class="fpt-user-name">${user.name.split(' ')[0]}</span>
+      <button class="fpt-user-signout" onclick="FPTAuth.signOut()">Sign out</button>
+    </div>
+  `;
+};
+
+FPTAuth.signOut = function() {
+  sessionStorage.removeItem('fpt_user');
+  google.accounts.id.disableAutoSelect();
+  const actions = document.querySelector('.site-header-actions');
+  if (actions) {
+    actions.innerHTML = `
+      <button class="btn-login" onclick="FPTAuth.open('login')">Login</button>
+      <button class="btn-start" onclick="FPTAuth.open('signup')">Start for free</button>
+    `;
+  }
+};
+
+// Auto restore session
+const saved = sessionStorage.getItem('fpt_user');
+if (saved) {
+  try { FPTAuth._showUserInHeader(JSON.parse(saved)); } catch(e) {}
+}
+
+}); // end window load
+</script>
+
+<style>
+.fpt-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px;
+  padding: 4px 14px 4px 4px;
+}
+.fpt-user-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.fpt-user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #f0f4ff;
+}
+.fpt-user-signout {
+  background: transparent;
+  border: none;
+  color: #5c7a9e;
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+.fpt-user-signout:hover { color: #ef4444; }
+</style>
+
+
+
+
+<style>
+.fpt-user-menu {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; padding: 5px 10px;
+  border-radius: 8px; position: relative;
+  transition: background 0.15s;
+}
+.fpt-user-menu:hover { background: rgba(255,255,255,0.06); }
+.fpt-user-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid rgba(59,130,246,0.4);
+  object-fit: cover;
+}
+.fpt-user-name {
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--text); max-width: 100px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.fpt-user-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  background: #0f1a2e;
+  border: 1px solid #254070;
+  border-radius: 12px; min-width: 220px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  z-index: 9999; overflow: hidden;
+}
+.fpt-user-dropdown-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px;
+}
+.fpt-user-dropdown-name {
+  font-size: 0.88rem; font-weight: 700; color: #f0f4ff;
+}
+.fpt-user-dropdown-email {
+  font-size: 0.75rem; color: #5c7a9e; margin-top: 1px;
+}
+.fpt-user-dropdown-divider {
+  height: 1px; background: #1e3050; margin: 0 12px;
+}
+.fpt-user-dropdown-item {
+  width: 100%; background: transparent; border: none;
+  color: #9dafc8; font-family: inherit; font-size: 0.85rem;
+  font-weight: 500; padding: 11px 16px;
+  display: flex; align-items: center; gap: 9px;
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+.fpt-user-dropdown-item:hover { background: rgba(239,68,68,0.08); color: #fca5a5; }
+
+
+</style>
+
+</body>
+</html>
+
+<!-- ═══════════════════ FPT AI LIFECYCLE — AUTH FLOW ═══════════════════ -->
+<div class="fpt-auth-overlay" id="fpt-auth-overlay">
+  <div class="fpt-auth-card" id="fpt-auth-card">
+
+    <!-- Close -->
+    <button class="fpt-auth-x" onclick="FPTAuth.close()" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+
+    <!-- Logo -->
+    <div class="fpt-auth-brand">
+      <span class="fpt-auth-brand-icon">◈</span>
+      <span class="fpt-auth-brand-name">FPT AI Lifecycle</span>
+    </div>
+
+    <!-- ── SCREEN: LOGIN ── -->
+    <div class="fpt-screen" id="screen-login">
+      <h2 class="fpt-auth-h2">Welcome back</h2>
+      <p class="fpt-auth-p">Sign in to your FPT AI Lifecycle account</p>
+
+      <div class="fpt-oauth-row">
+        <button class="fpt-oauth-btn" onclick="FPTAuth.oauth('github',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Continue with GitHub
+        </button>
+        <button class="fpt-oauth-btn" id="google-login-btn" onclick="FPTAuth.googleLogin()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+      </div>
+
+      <div class="fpt-divider"><span>or continue with email</span></div>
+
+      <div class="fpt-field">
+        <label class="fpt-label">Email address</label>
+        <input class="fpt-input" type="email" id="login-email" placeholder="you@fpt.com" autocomplete="email">
+        <span class="fpt-err" id="login-email-err"></span>
+      </div>
+      <div class="fpt-field">
+        <div class="fpt-label-row">
+          <label class="fpt-label">Password</label>
+          <a class="fpt-link-sm" onclick="FPTAuth.show('forgot')">Forgot password?</a>
+        </div>
+        <div class="fpt-input-wrap">
+          <input class="fpt-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+          <button class="fpt-eye" onclick="FPTAuth.togglePass('login-pass',this)" tabindex="-1">
+            <svg class="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <span class="fpt-err" id="login-pass-err"></span>
+      </div>
+
+      <button class="fpt-submit" id="login-submit" onclick="FPTAuth.login()">
+        <span>Sign in</span>
+        <span class="fpt-spinner" style="display:none"></span>
+      </button>
+
+      <p class="fpt-switch-text">
+        Don't have an account?
+        <a class="fpt-link" onclick="FPTAuth.show('signup')">Start for free →</a>
+      </p>
+    </div>
+
+    <!-- ── SCREEN: SIGNUP ── -->
+    <div class="fpt-screen" id="screen-signup" style="display:none">
+      <h2 class="fpt-auth-h2">Create your account</h2>
+      <p class="fpt-auth-p">Start for free — no credit card required</p>
+
+      <div class="fpt-oauth-row">
+        <button class="fpt-oauth-btn" onclick="FPTAuth.oauth('github',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Continue with GitHub
+        </button>
+        <button class="fpt-oauth-btn" id="google-signup-btn" onclick="FPTAuth.googleLogin()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+      </div>
+
+      <div class="fpt-divider"><span>or sign up with email</span></div>
+
+      <div class="fpt-field">
+        <label class="fpt-label">Full name</label>
+        <input class="fpt-input" type="text" id="signup-name" placeholder="Nguyen Van A" autocomplete="name">
+        <span class="fpt-err" id="signup-name-err"></span>
+      </div>
+      <div class="fpt-field">
+        <label class="fpt-label">Work email</label>
+        <input class="fpt-input" type="email" id="signup-email" placeholder="you@fpt.com" autocomplete="email">
+        <span class="fpt-err" id="signup-email-err"></span>
+      </div>
+      <div class="fpt-field">
+        <label class="fpt-label">Password</label>
+        <div class="fpt-input-wrap">
+          <input class="fpt-input" type="password" id="signup-pass" placeholder="Min. 8 characters" autocomplete="new-password" oninput="FPTAuth.checkStrength(this.value)">
+          <button class="fpt-eye" onclick="FPTAuth.togglePass('signup-pass',this)" tabindex="-1">
+            <svg class="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="fpt-strength" id="fpt-strength">
+          <div class="fpt-strength-bar"><div class="fpt-strength-fill" id="strength-fill"></div></div>
+          <span class="fpt-strength-label" id="strength-label"></span>
+        </div>
+        <span class="fpt-err" id="signup-pass-err"></span>
+      </div>
+
+      <p class="fpt-terms">
+        By creating an account you agree to our
+        <a class="fpt-link" href="#">Terms of Service</a> and
+        <a class="fpt-link" href="#">Privacy Policy</a>.
+      </p>
+
+      <button class="fpt-submit" id="signup-submit" onclick="FPTAuth.signup()">
+        <span>Create account</span>
+        <span class="fpt-spinner" style="display:none"></span>
+      </button>
+
+      <p class="fpt-switch-text">
+        Already have an account?
+        <a class="fpt-link" onclick="FPTAuth.show('login')">Sign in</a>
+      </p>
+    </div>
+
+    <!-- ── SCREEN: FORGOT PASSWORD ── -->
+    <div class="fpt-screen" id="screen-forgot" style="display:none">
+      <button class="fpt-back-btn" onclick="FPTAuth.show('login')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to sign in
+      </button>
+      <h2 class="fpt-auth-h2">Reset your password</h2>
+      <p class="fpt-auth-p">Enter your email and we'll send you a reset link</p>
+
+      <div class="fpt-field">
+        <label class="fpt-label">Email address</label>
+        <input class="fpt-input" type="email" id="forgot-email" placeholder="you@fpt.com" autocomplete="email">
+        <span class="fpt-err" id="forgot-email-err"></span>
+      </div>
+
+      <button class="fpt-submit" id="forgot-submit" onclick="FPTAuth.forgot()">
+        <span>Send reset link</span>
+        <span class="fpt-spinner" style="display:none"></span>
+      </button>
+    </div>
+
+    <!-- ── SCREEN: SUCCESS (email sent) ── -->
+    <div class="fpt-screen fpt-success-screen" id="screen-success" style="display:none">
+      <div class="fpt-success-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="fpt-auth-h2">Check your email</h2>
+      <p class="fpt-auth-p" id="success-msg">We've sent a password reset link to your email address.</p>
+      <button class="fpt-submit" onclick="FPTAuth.close()" style="margin-top:8px">Done</button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* ── AUTH OVERLAY ── */
+.fpt-auth-overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,10,20,0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.fpt-auth-overlay.open { opacity: 1; pointer-events: all; }
+
+/* ── AUTH CARD ── */
+.fpt-auth-card {
+  background: #0f1a2e;
+  border: 1px solid #254070;
+  border-radius: 18px;
+  padding: 40px 44px;
+  width: 100%; max-width: 440px;
+  position: relative;
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(37,99,235,0.08);
+}
+.fpt-auth-overlay.open .fpt-auth-card { transform: translateY(0) scale(1); }
+
+/* ── CLOSE ── */
+.fpt-auth-x {
+  position: absolute; top: 16px; right: 16px;
+  background: transparent; border: none;
+  color: #5c7a9e; cursor: pointer;
+  width: 32px; height: 32px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+.fpt-auth-x:hover { color: #f0f4ff; background: rgba(255,255,255,0.07); }
+
+/* ── BRAND ── */
+.fpt-auth-brand {
+  display: flex; align-items: center; gap: 9px;
+  margin-bottom: 24px;
+}
+.fpt-auth-brand-icon { font-size: 1.3rem; color: #3b82f6; }
+.fpt-auth-brand-name { font-size: 1rem; font-weight: 700; color: #f0f4ff; letter-spacing: -0.2px; }
+
+/* ── HEADINGS ── */
+.fpt-auth-h2 {
+  font-size: 1.55rem; font-weight: 800;
+  color: #fff; letter-spacing: -0.5px;
+  margin-bottom: 6px; line-height: 1.2;
+}
+.fpt-auth-p {
+  font-size: 0.88rem; color: #5c7a9e;
+  margin-bottom: 24px; line-height: 1.55;
+}
+
+/* ── OAUTH ── */
+.fpt-oauth-row { display: flex; flex-direction: column; gap: 9px; margin-bottom: 20px; }
+.fpt-oauth-btn {
+  width: 100%; background: #152038;
+  border: 1px solid #254070; color: #9dafc8;
+  font-family: inherit; font-size: 0.88rem; font-weight: 500;
+  padding: 11px 16px; border-radius: 9px;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 10px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.fpt-oauth-btn:hover { border-color: #3b82f6; color: #f0f4ff; background: #1a2840; }
+.fpt-oauth-btn.loading { opacity: 0.6; cursor: not-allowed; }
+
+/* ── DIVIDER ── */
+.fpt-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 20px; font-size: 0.78rem; color: #2a4060;
+}
+.fpt-divider::before, .fpt-divider::after {
+  content: ''; flex: 1; height: 1px; background: #1e3050;
+}
+.fpt-divider span { color: #5c7a9e; white-space: nowrap; }
+
+/* ── FIELDS ── */
+.fpt-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.fpt-label-row { display: flex; align-items: center; justify-content: space-between; }
+.fpt-label { font-size: 0.82rem; font-weight: 600; color: #9dafc8; letter-spacing: 0.1px; }
+.fpt-link-sm { font-size: 0.78rem; color: #3b82f6; cursor: pointer; text-decoration: none; }
+.fpt-link-sm:hover { text-decoration: underline; }
+
+.fpt-input-wrap { position: relative; }
+.fpt-input {
+  width: 100%; background: #152038;
+  border: 1px solid #1e3050;
+  color: #f0f4ff; font-family: inherit;
+  font-size: 0.9rem; padding: 11px 14px;
+  border-radius: 9px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.fpt-input-wrap .fpt-input { padding-right: 42px; }
+.fpt-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+.fpt-input.error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
+.fpt-input::placeholder { color: #2a4060; }
+
+.fpt-eye {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: transparent; border: none; color: #5c7a9e;
+  cursor: pointer; padding: 4px; border-radius: 4px;
+  transition: color 0.15s; display: flex; align-items: center;
+}
+.fpt-eye:hover { color: #9dafc8; }
+
+/* ── PASSWORD STRENGTH ── */
+.fpt-strength { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.fpt-strength-bar {
+  flex: 1; height: 4px; background: #1e3050;
+  border-radius: 2px; overflow: hidden;
+}
+.fpt-strength-fill {
+  height: 100%; width: 0%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+.fpt-strength-label { font-size: 0.72rem; color: #5c7a9e; min-width: 50px; text-align: right; }
+
+/* ── ERRORS ── */
+.fpt-err { font-size: 0.78rem; color: #ef4444; min-height: 16px; }
+
+/* ── TERMS ── */
+.fpt-terms { font-size: 0.78rem; color: #5c7a9e; line-height: 1.5; margin-bottom: 16px; }
+.fpt-link { color: #3b82f6; cursor: pointer; text-decoration: none; }
+.fpt-link:hover { text-decoration: underline; }
+
+/* ── SUBMIT ── */
+.fpt-submit {
+  width: 100%; background: #2563eb;
+  color: #fff; border: none;
+  font-family: inherit; font-size: 0.95rem; font-weight: 700;
+  padding: 13px; border-radius: 9px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: -0.1px; margin-bottom: 16px;
+}
+.fpt-submit:hover { background: #1d4ed8; transform: translateY(-1px); }
+.fpt-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── SPINNER ── */
+.fpt-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SWITCH TEXT ── */
+.fpt-switch-text { text-align: center; font-size: 0.84rem; color: #5c7a9e; }
+
+/* ── BACK BUTTON ── */
+.fpt-back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; border: none;
+  color: #5c7a9e; font-family: inherit;
+  font-size: 0.82rem; font-weight: 500;
+  cursor: pointer; padding: 0;
+  margin-bottom: 20px;
+  transition: color 0.15s;
+}
+.fpt-back-btn:hover { color: #9dafc8; }
+
+/* ── SUCCESS SCREEN ── */
+.fpt-success-screen { text-align: center; padding-top: 8px; }
+.fpt-success-icon {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.3);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  color: #10b981;
+  animation: successPop 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes successPop { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
+
+@media (max-width: 480px) {
+  .fpt-auth-card { padding: 28px 22px; }
+}
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  window.FPTAuth = {
+    currentScreen: 'login',
+
+    open(screen) {
+      this.show(screen || 'login');
+      document.getElementById('fpt-auth-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        const first = document.querySelector('#screen-' + (screen||'login') + ' .fpt-input');
+        if (first) first.focus();
+      }, 120);
+    },
+
+    close() {
+      document.getElementById('fpt-auth-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => this._clearAll(), 300);
+    },
+
+    show(screen) {
+      this.currentScreen = screen;
+      ['login','signup','forgot','success'].forEach(s => {
+        const el = document.getElementById('screen-' + s);
+        if (el) el.style.display = s === screen ? '' : 'none';
+      });
+      this._clearErrors();
+    },
+
+    togglePass(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      const isPass = inp.type === 'password';
+      inp.type = isPass ? 'text' : 'password';
+      btn.style.opacity = isPass ? '1' : '0.5';
+    },
+
+    checkStrength(val) {
+      const fill = document.getElementById('strength-fill');
+      const label = document.getElementById('strength-label');
+      if (!val) { fill.style.width = '0%'; label.textContent = ''; return; }
+      let score = 0;
+      if (val.length >= 8)  score++;
+      if (val.length >= 12) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const levels = [
+        { pct:'20%', color:'#ef4444', text:'Weak' },
+        { pct:'40%', color:'#f97316', text:'Fair' },
+        { pct:'60%', color:'#eab308', text:'Good' },
+        { pct:'80%', color:'#22c55e', text:'Strong' },
+        { pct:'100%',color:'#10b981', text:'Very strong' },
+      ];
+      const lvl = levels[Math.min(score, 4)];
+      fill.style.width = lvl.pct;
+      fill.style.background = lvl.color;
+      label.textContent = lvl.text;
+      label.style.color = lvl.color;
+    },
+
+    oauth(provider, btn) {
+      btn.classList.add('loading');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<span style="opacity:.6">Connecting to ' + provider + '...</span>';
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('loading'); }, 1600);
+    },
+
+    login() {
+      const email = document.getElementById('login-email').value.trim();
+      const pass  = document.getElementById('login-pass').value;
+      let valid = true;
+
+      this._clearErrors();
+
+      if (!email || !this._validEmail(email)) {
+        this._err('login-email', 'login-email-err', 'Please enter a valid email address');
+        valid = false;
+      }
+      if (!pass || pass.length < 6) {
+        this._err('login-pass', 'login-pass-err', 'Password must be at least 6 characters');
+        valid = false;
+      }
+      if (!valid) return;
+
+      this._setLoading('login-submit', true);
+      setTimeout(() => {
+        this._setLoading('login-submit', false);
+        // Simulate success
+        document.getElementById('success-msg').textContent =
+          'You are now signed in to FPT AI Lifecycle. Welcome back!';
+        this.show('success');
+      }, 1400);
+    },
+
+    signup() {
+      const name  = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const pass  = document.getElementById('signup-pass').value;
+      let valid = true;
+
+      this._clearErrors();
+
+      if (!name || name.length < 2) {
+        this._err('signup-name', 'signup-name-err', 'Please enter your full name');
+        valid = false;
+      }
+      if (!email || !this._validEmail(email)) {
+        this._err('signup-email', 'signup-email-err', 'Please enter a valid work email');
+        valid = false;
+      }
+      if (!pass || pass.length < 8) {
+        this._err('signup-pass', 'signup-pass-err', 'Password must be at least 8 characters');
+        valid = false;
+      }
+      if (!valid) return;
+
+      this._setLoading('signup-submit', true);
+      setTimeout(() => {
+        this._setLoading('signup-submit', false);
+        document.getElementById('success-msg').textContent =
+          'Your FPT AI Lifecycle account has been created. Check your email to verify.';
+        this.show('success');
+      }, 1500);
+    },
+
+    forgot() {
+      const email = document.getElementById('forgot-email').value.trim();
+      this._clearErrors();
+
+      if (!email || !this._validEmail(email)) {
+        this._err('forgot-email', 'forgot-email-err', 'Please enter a valid email address');
+        return;
+      }
+
+      this._setLoading('forgot-submit', true);
+      setTimeout(() => {
+        this._setLoading('forgot-submit', false);
+        document.getElementById('success-msg').textContent =
+          'We sent a password reset link to ' + email + '. Check your inbox.';
+        this.show('success');
+      }, 1300);
+    },
+
+    _validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); },
+
+    _err(inputId, errId, msg) {
+      const input = document.getElementById(inputId);
+      const err   = document.getElementById(errId);
+      if (input) input.classList.add('error');
+      if (err)   err.textContent = msg;
+    },
+
+    _clearErrors() {
+      document.querySelectorAll('.fpt-input').forEach(i => i.classList.remove('error'));
+      document.querySelectorAll('.fpt-err').forEach(e => e.textContent = '');
+    },
+
+    _clearAll() {
+      document.querySelectorAll('.fpt-input').forEach(i => { i.value = ''; i.classList.remove('error'); });
+      document.querySelectorAll('.fpt-err').forEach(e => e.textContent = '');
+      const fill = document.getElementById('strength-fill');
+      const label = document.getElementById('strength-label');
+      if (fill) fill.style.width = '0%';
+      if (label) label.textContent = '';
+    },
+
+    _setLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.disabled = loading;
+      const txt = btn.querySelector('span:first-child');
+      const spin = btn.querySelector('.fpt-spinner');
+      if (txt)  txt.style.display = loading ? 'none' : '';
+      if (spin) spin.style.display = loading ? '' : 'none';
+    },
+  };
+
+  // Backdrop click & ESC
+  document.getElementById('fpt-auth-overlay').addEventListener('click', function(e) {
+    if (e.target === this) FPTAuth.close();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') FPTAuth.close();
+  });
+
+  // Update header buttons to use FPTAuth
+  document.querySelectorAll('[onclick*="AuthModal"]').forEach(el => {
+    const m = el.getAttribute('onclick').match(/AuthModal\.open\('(\w+)'\)/);
+    if (m) el.setAttribute('onclick', `FPTAuth.open('${m[1]}')`);
+  });
+
+})();
+</script>
