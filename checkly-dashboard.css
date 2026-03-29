@@ -128,3 +128,26 @@
 .ckd-uptime-bar-bg { height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:6px; }
 .ckd-uptime-bar-fill { height:100%;border-radius:3px;transition:width .5s ease; }
 .ckd-uptime-pct { font-family:'Share Tech Mono',monospace;font-size:.72rem; }
+
+/* Lock message khi chưa login */
+.ckd-lock-msg {
+  width: 100%;
+  background: rgba(255,152,0,.06);
+  border: 1px dashed rgba(255,152,0,.25);
+  color: #5a8aaa;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .72rem;
+  font-weight: 500;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  letter-spacing: .5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all .2s;
+}
+.ckd-lock-msg:hover { border-color: rgba(255,152,0,.5); color: #ff9800; }
+.ckd-lock-msg span { color: inherit; }

@@ -262,30 +262,44 @@
       if (card.textContent.includes('Checkly') && !card.dataset.ckdAttached) {
         card.dataset.ckdAttached = '1';
 
-        // Thêm button ngay vào top của card (luôn visible)
-        if (!card.querySelector('.ckd-open-btn')) {
-          const top = card.querySelector('.s4-tool-top');
-          if (top) {
+        // Thêm button — chỉ hiện khi đã login
+        const existingBtn = card.querySelector('.ckd-open-btn');
+        const existingLock = card.querySelector('.ckd-lock-msg');
+        const top = card.querySelector('.s4-tool-top');
+
+        if (isLoggedIn()) {
+          // Xóa lock message nếu có
+          if (existingLock) existingLock.remove();
+          // Thêm button nếu chưa có
+          if (!existingBtn && top) {
             const btn = document.createElement('button');
             btn.className = 'ckd-open-btn';
             btn.textContent = '📊 Open Live Dashboard';
             btn.onclick = (e) => { e.stopPropagation(); CKDash.open(); };
             top.after(btn);
           }
-        }
-
-        // Cũng thêm vào expand panel nếu có
-        const detail = card.querySelector('.s4-tool-detail-inner');
-        if (detail && !detail.querySelector('.ckd-open-btn')) {
-          const btn2 = document.createElement('button');
-          btn2.className = 'ckd-open-btn';
-          btn2.textContent = '📊 Open Live Dashboard';
-          btn2.onclick = (e) => { e.stopPropagation(); CKDash.open(); };
-          detail.appendChild(btn2);
+        } else {
+          // Chưa login — xóa button nếu có, thêm lock message
+          if (existingBtn) existingBtn.remove();
+          if (!existingLock && top) {
+            const lock = document.createElement('div');
+            lock.className = 'ckd-lock-msg';
+            lock.innerHTML = '🔒 <span>Login to view Live Dashboard</span>';
+            lock.onclick = (e) => { e.stopPropagation(); if(window.FPTAuth) FPTAuth.open('login'); };
+            top.after(lock);
+          }
         }
       }
     });
   };
+
+  // Kiểm tra login status
+  function isLoggedIn() {
+    try {
+      const user = sessionStorage.getItem('fpt_user');
+      return !!user;
+    } catch { return false; }
+  }
 
   // Auto-attach sau mỗi 500ms nếu chưa attach
   function autoAttach() {
@@ -297,5 +311,10 @@
     }
   }
   setTimeout(autoAttach, 800);
+
+  // Re-check login status khi sessionStorage thay đổi
+  window.addEventListener('storage', function() {
+    window.CKDash_attachCard();
+  });
 
 })();
