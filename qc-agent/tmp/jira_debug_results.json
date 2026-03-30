@@ -1,0 +1,60 @@
+{
+  "projectId": "15234",
+  "statuses": [
+    {
+      "isDefault": true,
+      "color": "#f0ad4e",
+      "i18nKey": "TESTCASE.STATUS.DRAFT",
+      "name": "Draft",
+      "index": 0,
+      "id": 42,
+      "projectId": 15234
+    },
+    {
+      "isDefault": false,
+      "color": "#4b88e7",
+      "i18nKey": "TESTCASE.STATUS.DEPRECATED",
+      "name": "Deprecated",
+      "index": 1,
+      "id": 43,
+      "projectId": 15234
+    },
+    {
+      "isDefault": false,
+      "color": "#3abb4b",
+      "i18nKey": "TESTCASE.STATUS.APPROVED",
+      "name": "Approved",
+      "index": 2,
+      "id": 44,
+      "projectId": 15234
+    }
+  ],
+  "priorities": [
+    {
+      "isDefault": false,
+      "color": "#ff0000",
+      "name": "High",
+      "index": 0,
+      "id": 51,
+      "projectId": 15234
+    },
+    {
+      "isDefault": true,
+      "color": "#ffa900",
+      "i18nKey": "TESTCASE.PRIORITY.NORMAL",
+      "name": "Normal",
+      "index": 1,
+      "id": 52,
+      "projectId": 15234
+    },
+    {
+      "isDefault": false,
+      "color": "#008000",
+      "i18nKey": "TESTCASE.PRIORITY.LOW",
+      "name": "Low",
+      "index": 2,
+      "id": 53,
+      "projectId": 15234
+    }
+  ]
+}
