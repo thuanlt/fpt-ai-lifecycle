@@ -112,6 +112,10 @@
           <div class="s4-nav-item" onclick="S4Sidebar.nav('tools')" data-panel="tools">
             <span class="s4-nav-icon">🛠️</span> My Tool
           </div>
+          ${user.email === 'luuthithuan@gmail.com' ? `
+          <div class="s4-nav-item s4-nav-item--private" onclick="S4Sidebar.nav('qcagent')" data-panel="qcagent">
+            <span class="s4-nav-icon">🤖</span> QC Agent
+          </div>` : ''}
           <div class="s4-nav-divider"></div>
           <div class="s4-nav-item" onclick="S4Sidebar.nav('document')" data-panel="document">
             <span class="s4-nav-icon">📄</span> Document
@@ -246,6 +250,50 @@
       </div>`;
   }
 
+  // ── Build QC Agent Panel (private: luuthithuan@gmail.com only) ─
+  function buildQCAgentPanel() {
+    return `
+      <div id="s4-panel-qcagent" class="s4-panel">
+        <div class="s4-page-header">
+          <div class="s4-page-breadcrumb">
+            <a onclick="goTo('home')">FPT AI Lifecycle</a> › Stage 4 › QC Agent
+          </div>
+          <div class="s4-page-title">🤖 QC Agent</div>
+          <div class="s4-page-desc">AI-powered QA agent — tự động hoá kiểm thử & phân tích lỗi.</div>
+        </div>
+        <div class="s4-tool-list">
+          <div class="s4-tool-item expanded">
+            <div class="s4-tool-item-header">
+              <span class="s4-tool-chip green">qc-agent</span>
+              <span class="s4-tool-item-use">Autonomous QA agent with MCP integrations</span>
+            </div>
+            <div class="s4-tool-item-body">
+              <div class="s4-tool-item-desc">
+                QC Agent sử dụng Claude AI + MCP servers (Playwright, Jira, filesystem) để tự động hoá toàn bộ quy trình QA:
+                phân tích yêu cầu, sinh test case, chạy E2E test, báo cáo lỗi lên Jira.
+              </div>
+              <div class="s4-tool-feature-list">
+                <div class="s4-tool-feature">✅ Tự động sinh & chạy Playwright test</div>
+                <div class="s4-tool-feature">✅ Tích hợp Jira — tạo bug ticket tự động</div>
+                <div class="s4-tool-feature">✅ Vector search với Qdrant</div>
+                <div class="s4-tool-feature">✅ MCP: Playwright + bash + filesystem</div>
+              </div>
+              <div class="s4-tool-footer">
+                <a class="s4-tool-link" href="https://github.com/thuanlt/fpt-ai-lifecycle/tree/master/qc-agent" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗ View Source on GitHub</a>
+                <span class="s4-tool-pricing">Private Access</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem;padding:1rem;background:#1e1e2e;border-radius:8px;font-family:monospace;font-size:0.85rem;color:#cdd6f4;">
+            <div style="color:#a6e3a1;margin-bottom:0.5rem"># Chạy QC Agent</div>
+            <div>cd qc-agent</div>
+            <div>pip install -r requirements.txt</div>
+            <div>python src/main.py</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   // ── Build Document Panel ────────────────────────
   function buildDocumentPanel(stageData) {
     const d = stageData || {};
@@ -377,6 +425,7 @@
         ${buildDashboardPanel()}
         ${buildProgressPanel()}
         ${buildToolsPanel(stageData)}
+        ${user.email === 'luuthithuan@gmail.com' ? buildQCAgentPanel() : ''}
         ${buildDocumentPanel(stageData)}
       </main>
     `;
