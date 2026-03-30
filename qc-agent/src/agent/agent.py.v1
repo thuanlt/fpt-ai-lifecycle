@@ -1,0 +1,159 @@
+# ./agent/agent.py
+from abc import ABC, abstractmethod
+from openai import OpenAI
+import config
+from memory import MemoryManager
+from memory.shared_memory import SharedMemory
+from utils.logger import Logger
+from models import ModelInfo
+import json
+
+class AbstractAgent(ABC):
+    def __init__(self, 
+                 agent_profile: dict,
+                 mcp_clients: list = None, 
+                 shared_memory: SharedMemory = None, 
+                 logger: Logger = None):
+        self.profile = agent_profile
+        self.memory = MemoryManager(shared_memory)
+        self.mcp_clients = mcp_clients if mcp_clients else []
+        self.llm_client = OpenAI(api_key=config.OPENAI_API_KEY,
+                                 base_url=config.OPENAI_API_BASE)
+        self.logger = logger
+        self.tools = None
+        self.functions = None
+        self.map_tool_mcp = {}
+
+    async def _execute_llm_call(self, 
+                                system_prompt: str, 
+                                user_prompt: str, 
+                                use_tool: bool = False, 
+                                use_function: bool = False, 
+                                tool_choice: str = None,
+                                response_format = None,
+                                need_parse=True) -> dict:
+        """
+        Executes an LLM call with the provided prompts.
+        This method is now lean and focuses only on the API interaction.
+        """
+        if use_tool and not self.tools:
+            self.tools = []
+            for client in self.mcp_clients:
+                tools = await client.list_openai_tools()
+                self.tools.extend(tools)
+
+                for tool in tools:
+                    self.map_tool_mcp[tool["function"]["name"]] = client
+        
+        try:
+            # if use_tool:
+            #     print(f"Using tools: {self.tools}")
+            if response_format is not None:
+                # print(f"Using response_format = {response_format}")
+                if need_parse:
+                    # print(f"Using response_format with parse {response_format}")
+                    response = self.llm_client.beta.chat.completions.create(
+                        model=config.LLM_MODEL_NAME,
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": user_prompt}
+                        ],
+                        temperature=0.0,
+                        response_format=response_format
+                    )
+                    return response.choices[0].message.parsed
+                else:
+                    # print(f"Using response_format without parse {response_format}")
+                    response = self.llm_client.chat.completions.create(
+                        model=config.LLM_MODEL_NAME,
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": user_prompt}
+                        ],
+                        temperature=0.0,
+                        response_format=response_format
+                    )
+                    return response.choices[0].message.content
+
+                # response = self.llm_client.beta.chat.completions.parse(
+                #     model=config.LLM_MODEL_NAME,
+                #     messages=[
+                #         {"role": "system", "content": system_prompt},
+                #         {"role": "user", "content": user_prompt}
+                #     ],
+                #     temperature=0.0,
+                #     response_format=response_format
+                # )
+                # print(response)
+
+                # message = response.choices[0].message
+                # # return message.parsed
+                # return message.content
+            else:
+                # if use_tool:
+                    # print(f"TOOL TO CALL {json.dumps(self.tools, indent=2)}")
+                response = self.llm_client.chat.completions.create(
+                    model=config.LLM_MODEL_NAME,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    temperature=0.0,
+                    tools=self.tools if use_tool and len(self.tools) > 0 else None,
+                    functions=self.functions if use_function and len(self.functions) > 0 else None,
+                    tool_choice=tool_choice if use_tool and tool_choice else None
+                )
+            
+                # Write brief thought process to shared memory
+                # raw_content = response.choices[0].message.content or ""
+                # nothinking_content = self.cut_thinking_step(raw_content)
+                # if nothinking_content and self.memory.shared_memory is not None:
+                #     self.memory.shared_memory.write_to_shared_log(self.profile['name'], nothinking_content)
+
+                return response
+        except Exception as e:
+            if self.logger:
+                self.logger.console.print(f"[bold red]LLM Call Failed for {self.profile['name']}: {e}[/bold red]")
+            else:
+                print(f"An error occurred during LLM call for {self.profile['name']}: {e}")
+            return None
+
+    @abstractmethod
+    async def run(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def agent_as_a_function_description(self) -> dict:
+        pass
+
+    async def execute_tool(self, tool_name: str, parameters: dict) -> dict:
+        return await self.map_tool_mcp[tool_name].execute_tool(tool_name, parameters)
+
+    def cut_thinking_step(self, response_str: str) -> str:
+        if not response_str:
+            return ""
+        if '</think>' in response_str:
+            return response_str[response_str.find('</think>') + 8:].strip()
+        return response_str.strip()
+
+    async def initialize_tools(self):
+        """
+        Chủ động lấy danh sách tool từ các MCP client đã kết nối.
+        Phương thức này phải được gọi sau khi các client đã được "enter".
+        """
+        if self.tools is None: # Chỉ chạy nếu self.tools chưa được khởi tạo
+            self.tools = []
+            if not self.mcp_clients:
+                self.logger.console.print(f"[yellow]Warning: QCAgent has no MCP clients.[/yellow]")
+                return
+
+            self.logger.console_log(0, self.profile['name'], "Initializing tools from connected MCP clients...")
+            for client in self.mcp_clients:
+                if client.is_initialized:
+                    openai_tools = await client.list_openai_tools()
+                    self.tools.extend(openai_tools)
+                    for tool in openai_tools:
+                        self.map_tool_mcp[tool["function"]["name"]] = client
+                else:
+                    self.logger.console.print(f"[bold red]Error: MCP client for QCAgent is not initialized.[/bold red]")
+            self.logger.console_log(0, self.profile['name'], f"Successfully initialized {len(self.tools)} tools.")
