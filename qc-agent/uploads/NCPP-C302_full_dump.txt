@@ -1,0 +1,622 @@
+TEST CASE ID: NCPP-T9201
+NAME: 100% CRU operations được log
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thực hiện create/update trên tất cả entity, kiểm tra audit_logs => 100% operations có audit record với entity_type, entity_id, action, actor, old_value, new_value (NFR5)
+---
+
+TEST CASE ID: NCPP-T9190
+NAME: API availability 99.9% uptime
+OBJECTIVE: 
+STEPS: 
+- Step 1: Uptime monitoring trong 30 ngày => Downtime < 43.8 phút/tháng (NFR2)
+---
+
+TEST CASE ID: NCPP-T9206
+NAME: API filter và pagination hoạt động nhất quán
+OBJECTIVE: 
+STEPS: 
+- Step 1: Test GET endpoints với các tham số filter/page/limit => Kết quả đúng, có metadata phân trang (total, page, limit)
+---
+
+TEST CASE ID: NCPP-T9189
+NAME: API throughput dưới tải cao
+OBJECTIVE: 
+STEPS: 
+- Step 1: Load test: 500 TPS liên tục trong 30 phút => No degradation, không có errors 5xx
+---
+
+TEST CASE ID: NCPP-T9156
+NAME: Activate instance thành công
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/activate (Super Admin) => Status chuyển pending_activation → active, audit log ghi nhận
+---
+
+TEST CASE ID: NCPP-T9158
+NAME: Activate khi region bị disabled
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/activate => HTTP 400, error REG-006
+---
+
+TEST CASE ID: NCPP-T9159
+NAME: Activate khi region đang maintenance
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/activate => HTTP 400, error REG-007
+---
+
+TEST CASE ID: NCPP-T9160
+NAME: Activate thất bại do validation fail → về draft
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/activate => Status = draft, error reason được ghi nhận, audit log có kết quả validation
+---
+
+TEST CASE ID: NCPP-T9167
+NAME: Audit log ghi nhận mọi thao tác CRU
+OBJECTIVE: 
+STEPS: 
+- Step 1: Xem audit_logs => 100% operations có bản ghi với actor, actor_ip, old_value, new_value
+---
+
+TEST CASE ID: NCPP-T9199
+NAME: Audit log không thể bị xóa/sửa
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thử DELETE/UPDATE trên audit_logs => Không có API hoặc cơ chế xóa/sửa audit log
+---
+
+TEST CASE ID: NCPP-T9200
+NAME: Audit log retention 2 năm
+OBJECTIVE: 
+STEPS: 
+- Step 1: Kiểm tra retention policy => Audit logs được giữ tối thiểu 2 năm (Section 6.6)
+---
+
+TEST CASE ID: NCPP-T9173
+NAME: BSS token invalid trả về 503
+OBJECTIVE: 
+STEPS: 
+- Step 1: Control Plane resolve token => HTTP 503, error FR-CP7
+---
+
+TEST CASE ID: NCPP-T9192
+NAME: BSS unavailable không làm sập service catalog
+OBJECTIVE: 
+STEPS: 
+- Step 1: Simulate BSS down => Service Catalog vẫn hoạt động, Control Plane trả 503 cho requests cần BSS
+---
+
+TEST CASE ID: NCPP-T9208
+NAME: Cache TTL đúng 30 giây
+OBJECTIVE: 
+STEPS: 
+- Step 1: Kiểm tra response header cache_ttl_sec => cache_ttl_sec=30 trong mọi routing-metadata response
+---
+
+TEST CASE ID: NCPP-T9185
+NAME: Cache hit latency < 5ms
+OBJECTIVE: 
+STEPS: 
+- Step 1: Warm cache, đo thời gian response => Response time < 5ms khi cache hit
+---
+
+TEST CASE ID: NCPP-T9175
+NAME: Cache invalidate khi activate instance
+OBJECTIVE: 
+STEPS: 
+- Step 1: Activate instance mới => Cache routing:${region} và routing:all bị invalidate trong < 5s
+---
+
+TEST CASE ID: NCPP-T9176
+NAME: Cache invalidate khi deactivate instance
+OBJECTIVE: 
+STEPS: 
+- Step 1: Deactivate instance => Cache bị invalidate trong < 5s
+---
+
+TEST CASE ID: NCPP-T9179
+NAME: Cache invalidate khi enable/disable action
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/actions/{id} với is_enabled mới => Cache bị invalidate
+---
+
+TEST CASE ID: NCPP-T9177
+NAME: Cache invalidate khi đổi maintenance_mode
+OBJECTIVE: 
+STEPS: 
+- Step 1: Bật maintenance_mode cho region => Cache routing:${region} bị invalidate trong < 5s
+---
+
+TEST CASE ID: NCPP-T9187
+NAME: Cache invalidation trong < 5 giây
+OBJECTIVE: 
+STEPS: 
+- Step 1: Activate/deactivate instance, đo thời gian đến khi cache được invalidate => Thời gian invalidation < 5s (NFR6)
+---
+
+TEST CASE ID: NCPP-T9186
+NAME: Cache miss + DB fetch < 50ms
+OBJECTIVE: 
+STEPS: 
+- Step 1: Xóa cache, đo thời gian response => Response time < 50ms khi cache miss
+---
+
+TEST CASE ID: NCPP-T9174
+NAME: Chỉ active instances xuất hiện trong routing
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/routing-metadata => Draft và inactive instances không xuất hiện
+---
+
+TEST CASE ID: NCPP-T9210
+NAME: Control Plane chỉ đọc metadata (read-only API)
+OBJECTIVE: 
+STEPS: 
+- Step 1: Kiểm tra Control Plane APIs => Không có endpoint POST/PUT/DELETE trong Control Plane API (Section 13.2)
+---
+
+TEST CASE ID: NCPP-T9153
+NAME: Control Plane reject disabled action
+OBJECTIVE: 
+STEPS: 
+- Step 1: Control Plane gọi với action bị disabled => HTTP reject, action không thực hiện được (FR-A2)
+---
+
+TEST CASE ID: NCPP-T9136
+NAME: Cập nhật endpoint của instance
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/instances/{id} với endpoint mới => HTTP 200, endpoint được cập nhật
+---
+
+TEST CASE ID: NCPP-T9137
+NAME: Cập nhật instance đang active làm reset về draft
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/instances/{id} thay đổi endpoint => HTTP 200, status chuyển sang "pending_activation" hoặc "draft" (FR-RG8)
+---
+
+TEST CASE ID: NCPP-T9144
+NAME: Cập nhật region: bật maintenance_mode
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/regions/{code} với maintenance_mode=true, maintenance_message="System upgrade" => HTTP 200, maintenance_mode=true, message được lưu
+---
+
+TEST CASE ID: NCPP-T9127
+NAME: Cập nhật thông tin service (name, description)
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/services/{code} với name mới => HTTP 200, name được cập nhật, updated_at/updated_by ghi nhận đúng
+---
+
+TEST CASE ID: NCPP-T9193
+NAME: Database connection pool đúng cấu hình
+OBJECTIVE: 
+STEPS: 
+- Step 1: Kiểm tra config => Pool size = 20 connections (NFR8), không bị connection exhausted dưới tải bình thường
+---
+
+TEST CASE ID: NCPP-T9161
+NAME: Deactivate instance thành công
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/deactivate (Super Admin) kèm reason => Status = inactive, deactivated_at được set
+---
+
+TEST CASE ID: NCPP-T9162
+NAME: Deactivate yêu cầu reason
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/deactivate không có reason => HTTP 400, reason là bắt buộc
+---
+
+TEST CASE ID: NCPP-T9188
+NAME: Deactivation propagation ≤ 60 giây
+OBJECTIVE: 
+STEPS: 
+- Step 1: Deactivate instance, đo thời gian đến khi Control Plane ngừng route => Propagation time ≤ 60s (NFR7)
+---
+
+TEST CASE ID: NCPP-T9165
+NAME: Emergency revoke bypass grace period
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/emergency-revoke (Super Admin) => Status = inactive NGAY LẬP TỨC, cache invalidated ngay, audit log ghi "emergency" flag
+---
+
+TEST CASE ID: NCPP-T9209
+NAME: Emergency revoke log có "emergency" flag
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thực hiện emergency revoke => audit_logs có record với reason chứa "emergency" flag (FR-REV3)
+---
+
+TEST CASE ID: NCPP-T9205
+NAME: Error message rõ ràng và có mã lỗi
+OBJECTIVE: 
+STEPS: 
+- Step 1: Gây ra từng loại lỗi (SVC-001, REG-001, v.v.) => Response body chứa error code + human-readable message theo bảng Section 12
+---
+
+TEST CASE ID: NCPP-T9169
+NAME: Filter routing metadata theo region
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/routing-metadata?region=VN => Chỉ trả instances ở region VN
+---
+
+TEST CASE ID: NCPP-T9170
+NAME: Filter routing metadata theo service
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/routing-metadata?service=ainotebook => Chỉ trả instances của service ainotebook
+---
+
+TEST CASE ID: NCPP-T9163
+NAME: Grace period 60 giây sau deactivate
+OBJECTIVE: 
+STEPS: 
+- Step 1: Trong 60s sau deactivate, gửi request routing đến instance => Control Plane vẫn route trong 60s
+---
+
+TEST CASE ID: NCPP-T9191
+NAME: Graceful degradation khi DB chậm
+OBJECTIVE: 
+STEPS: 
+- Step 1: Simulate DB latency tăng => Trả cache stale, không crash, không mất dữ liệu
+---
+
+TEST CASE ID: NCPP-T9139
+NAME: Hai version cùng active ở cùng region
+OBJECTIVE: 
+STEPS: 
+- Step 1: Activate thêm v1.3.0 tại VN => Cả 2 cùng active, Control Plane route theo version mới nhất (FR-V2)
+---
+
+TEST CASE ID: NCPP-T9203
+NAME: Immutable fields không thay đổi
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thử PATCH service.code hoặc instance.version => API từ chối hoặc bỏ qua thay đổi, không có lỗi dữ liệu
+---
+
+TEST CASE ID: NCPP-T9141
+NAME: Instance metadata được validate theo service schema
+OBJECTIVE: 
+STEPS: 
+- Step 1: Tạo instance không có trường bắt buộc trong metadata => HTTP 400, validation error
+---
+
+TEST CASE ID: NCPP-T9135
+NAME: Instance mới khởi tạo ở trạng thái draft
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/instances/{id} => status = "draft"
+---
+
+TEST CASE ID: NCPP-T9195
+NAME: Không có raw token trong database
+OBJECTIVE: 
+STEPS: 
+- Step 1: Security audit DB => Zero raw tokens trong bảng bss_access_mappings và mọi bảng khác (NFR4)
+---
+
+TEST CASE ID: NCPP-T9168
+NAME: Lấy toàn bộ routing metadata
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/routing-metadata => HTTP 200, chỉ trả về instances có status=active, đầy đủ fields: endpoint, version, actions, bss_token_reference, metadata
+---
+
+TEST CASE ID: NCPP-T9184
+NAME: Metadata retrieval latency P95 < 50ms
+OBJECTIVE: 
+STEPS: 
+- Step 1: P95 response time < 50ms (NFR1) => None
+---
+
+TEST CASE ID: NCPP-T9181
+NAME: Operator Admin chỉ quản lý service mình sở hữu
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/services/{code} của service khác => HTTP 403
+---
+
+TEST CASE ID: NCPP-T9149
+NAME: Operator Admin cập nhật region bị từ chối
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/regions/{code} => HTTP 403, chỉ Super Admin mới được phép
+---
+
+TEST CASE ID: NCPP-T9157
+NAME: Operator Admin không thể activate
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/activate => HTTP 403, error AUTH-001
+---
+
+TEST CASE ID: NCPP-T9166
+NAME: Operator Admin không thể emergency revoke
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/emergency-revoke => HTTP 403, error AUTH-002
+---
+
+TEST CASE ID: NCPP-T9183
+NAME: Operator Admin không được activate
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances/{id}/activate => HTTP 403
+---
+
+TEST CASE ID: NCPP-T9155
+NAME: Operator Admin tạo action cho service mình sở hữu
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/actions với service thuộc quyền => HTTP 201 thành công
+---
+
+TEST CASE ID: NCPP-T9131
+NAME: Operator Admin tạo service của người khác
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/services với owner_team khác => HTTP 403 hoặc tạo service thành công (theo phạm vi quyền)
+---
+
+TEST CASE ID: NCPP-T9197
+NAME: RBAC hoạt động đúng ở mọi endpoint
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thử tất cả endpoints với từng role => Quyền đúng theo ma trận phân quyền
+---
+
+TEST CASE ID: NCPP-T9146
+NAME: Region is_enabled=true chỉ khi có active instance
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thử set is_enabled=true => HTTP 400, không thể enable region khi chưa có active instance (FR-RC2)
+---
+
+TEST CASE ID: NCPP-T9172
+NAME: Region maintenance_mode trả về 503
+OBJECTIVE: 
+STEPS: 
+- Step 1: Gửi request đến region đó qua Control Plane => HTTP 503, kèm maintenance_message
+---
+
+TEST CASE ID: NCPP-T9171
+NAME: Response đúng schema định nghĩa
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/routing-metadata => Response có đầy đủ: instances[], generated_at, cache_ttl_sec=30
+---
+
+TEST CASE ID: NCPP-T9196
+NAME: SQL Injection không thể thực hiện
+OBJECTIVE: 
+STEPS: 
+- Step 1: Gửi SQL injection payload vào các input fields => Hệ thống không bị inject, trả về 400
+---
+
+TEST CASE ID: NCPP-T9164
+NAME: Sau grace period, Control Plane ngừng route
+OBJECTIVE: 
+STEPS: 
+- Step 1: Gửi request routing => Control Plane không route đến instance
+---
+
+TEST CASE ID: NCPP-T9207
+NAME: Service onboarding hoàn thành trong ≤ 2 sprints
+OBJECTIVE: 
+STEPS: 
+- Step 1: Process timing (BO-2) => Toàn bộ checklist Section 14 thực hiện được trong 2 sprints
+---
+
+TEST CASE ID: NCPP-T9178
+NAME: Stale-while-revalidate hoạt động đúng
+OBJECTIVE: 
+STEPS: 
+- Step 1: Request đến Control Plane khi cache stale => Trả stale data trong 10s, đồng thời fetch mới ở nền
+---
+
+TEST CASE ID: NCPP-T9182
+NAME: Super Admin có đầy đủ quyền CRU và Activate
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thực hiện tất cả endpoints => Tất cả thành công
+---
+
+TEST CASE ID: NCPP-T9128
+NAME: Thử cập nhật service_code sau khi tạo
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/services/{code} với trường code khác => HTTP 400, code bất biến (FR-S6)
+---
+
+TEST CASE ID: NCPP-T9140
+NAME: Thử thay đổi version của instance đang tồn tại
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/instances/{id} với version="1.3.0" => HTTP 400, version bất biến (FR-V4)
+---
+
+TEST CASE ID: NCPP-T9198
+NAME: Token reference không lộ trong logs
+OBJECTIVE: 
+STEPS: 
+- Step 1: Kiểm tra application logs, access logs => token_reference không xuất hiện dạng plain text trong logs
+---
+
+TEST CASE ID: NCPP-T9150
+NAME: Tạo action thành công
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/actions với service_code, region, action_code, action_name hợp lệ => HTTP 201, action tạo thành công, is_enabled=true mặc định
+---
+
+TEST CASE ID: NCPP-T9151
+NAME: Tạo action trùng (service_code, region, action_code)
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/actions với cùng bộ (service_code, region, action_code) => HTTP 409, error ACT-001
+---
+
+TEST CASE ID: NCPP-T9132
+NAME: Tạo instance thành công
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances với service_code, region, version, endpoint hợp lệ => HTTP 201, instance ở trạng thái "draft", id UUID được sinh
+---
+
+TEST CASE ID: NCPP-T9133
+NAME: Tạo instance với trùng (service_code, region, version)
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances với cùng bộ (service_code=ainotebook, region=VN, version=1.2.0) => HTTP 409, error REG-002
+---
+
+TEST CASE ID: NCPP-T9134
+NAME: Tạo instance với version không theo semver
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/instances với version="v1.2" hoặc "1.2" => HTTP 400, error REG-001 "Invalid version format"
+---
+
+TEST CASE ID: NCPP-T9143
+NAME: Tạo region mới
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/regions với code, name hợp lệ => HTTP 201, region tạo thành công, is_enabled=false mặc định
+---
+
+TEST CASE ID: NCPP-T9122
+NAME: Tạo service thành công
+OBJECTIVE: 
+STEPS: 
+- Step 1: 1. POST /api/v1/services với payload hợp lệ (code, name, owner_team) => HTTP 201, service được tạo với code duy nhất, created_at/created_by được ghi nhận
+---
+
+TEST CASE ID: NCPP-T9125
+NAME: Tạo service với code có chữ hoa
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/services với code="AiNotebook" => HTTP 400, SVC-001 (code phải lowercase, alphanumeric và hyphens)
+---
+
+TEST CASE ID: NCPP-T9124
+NAME: Tạo service với code không hợp lệ (có ký tự đặc biệt)
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/services với code="AI_Notebook!" => HTTP 400, error SVC-001 "Invalid service code format"
+---
+
+TEST CASE ID: NCPP-T9123
+NAME: Tạo service với code trùng lặp
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/services với code="ainotebook" => HTTP 409, error SVC-002 "Service code already exists"
+---
+
+TEST CASE ID: NCPP-T9130
+NAME: Tạo service với metadata_schema hợp lệ
+OBJECTIVE: 
+STEPS: 
+- Step 1: POST /api/v1/services với metadata_schema là JSON Schema hợp lệ => HTTP 201, schema được lưu, dùng validate instance sau này
+---
+
+TEST CASE ID: NCPP-T9194
+NAME: Tất cả endpoint dùng HTTPS
+OBJECTIVE: 
+STEPS: 
+- Step 1: Security scan tất cả endpoints => 100% endpoints dùng HTTPS/TLS (NFR3), không có HTTP endpoint
+---
+
+TEST CASE ID: NCPP-T9145
+NAME: Tắt region khi có active instance bị chặn
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/regions/VN với is_enabled=false => HTTP 400, error RGN-002 "Cannot disable region with active instances"
+---
+
+TEST CASE ID: NCPP-T9148
+NAME: Tắt region tự động deactivate tất cả instance
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/regions/{code} với is_enabled=false (sau khi xử lý active instances) => Tất cả instance trong region chuyển sang inactive (FR-RC5)
+---
+
+TEST CASE ID: NCPP-T9180
+NAME: Unauthenticated request bị từ chối
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/services => HTTP 401
+---
+
+TEST CASE ID: NCPP-T9202
+NAME: Unique constraint hoạt động đúng
+OBJECTIVE: 
+STEPS: 
+- Step 1: Thử tạo duplicate (service_code, region, version) => DB unique constraint ngăn duplicate
+---
+
+TEST CASE ID: NCPP-T9152
+NAME: Vô hiệu hóa action
+OBJECTIVE: 
+STEPS: 
+- Step 1: PUT /api/v1/actions/{id} với is_enabled=false => HTTP 200, is_enabled=false
+---
+
+TEST CASE ID: NCPP-T9154
+NAME: Xóa action bị từ chối
+OBJECTIVE: 
+STEPS: 
+- Step 1: DELETE /api/v1/actions/{id} => HTTP 405/403, FR-A4
+---
+
+TEST CASE ID: NCPP-T9138
+NAME: Xóa instance bị từ chối
+OBJECTIVE: 
+STEPS: 
+- Step 1: DELETE /api/v1/instances/{id} => HTTP 405/403, "Delete not allowed"
+---
+
+TEST CASE ID: NCPP-T9147
+NAME: Xóa region bị từ chối
+OBJECTIVE: 
+STEPS: 
+- Step 1: DELETE /api/v1/regions/{code} => HTTP 405/403 (FR-RC4)
+---
+
+TEST CASE ID: NCPP-T9129
+NAME: Xóa service bị từ chối
+OBJECTIVE: 
+STEPS: 
+- Step 1: DELETE /api/v1/services/{code} => HTTP 405 hoặc 403, thông báo "Delete not allowed"
+---
+
+TEST CASE ID: NCPP-T9204
+NAME: created_at, updated_at tự động gán đúng
+OBJECTIVE: 
+STEPS: 
+- Step 1: Tạo và update bất kỳ entity => Timestamps chính xác theo timezone UTC
+---
+
+TEST CASE ID: NCPP-T9142
+NAME: Đọc danh sách instance theo filter service/region/status
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/instances?service=ainotebook&region=VN&status=active => Trả về đúng danh sách theo filter
+---
+
+TEST CASE ID: NCPP-T9126
+NAME: Đọc danh sách service có phân trang
+OBJECTIVE: 
+STEPS: 
+- Step 1: GET /api/v1/services?page=1&limit=10 => HTTP 200, trả danh sách có phân trang, lọc đúng theo filter
+---
