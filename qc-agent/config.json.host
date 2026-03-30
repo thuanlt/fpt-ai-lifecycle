@@ -1,0 +1,21 @@
+{
+  "mcp_servers": {
+    "playwright": {
+      "protocol": "http",
+      "url": "http://localhost:8931/mcp"
+    },
+    "filesystem": {
+      "protocol": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/huepro/Projects/AI/LLM/QCAgents.bk/tmp"
+      ]
+    },
+    "bash-server": {
+      "protocol": "direct",
+      "file": "src/tools/server/bash_mcp.py"
+    }
+  }
+}
