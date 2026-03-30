@@ -1,0 +1,7 @@
+name: "SRS Planning Strategy"
+description: "How to parse an SRS document and map it to logically grouped testing tasks."
+instructions:
+  - "Read the SRS Summary, Activity Flow, UI/Screen elements, and Business Rules."
+  - "Divide the testing effort into up to 4 main categories if applicable: UI/UX, Validation, Func, and API."
+  - "Do not generate test cases directly; only create high-level batch scopes for the 'SENIOR' worker."
+  - "Ensure each task's `description` clearly states which section of the SRS and which specific rules the Senior Tester should focus on."
