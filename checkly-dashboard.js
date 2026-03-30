@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════
    CHECKLY DASHBOARD
-   Dùng Anthropic API làm proxy gọi Checkly API
+   Gọi trực tiếp Checkly Management API v1
    Tích hợp vào Stage 4 — tab DASHBOARD trong Checkly card
 ══════════════════════════════════════════════════ */
 
@@ -9,11 +9,16 @@
 
   const CHECKLY_API_KEY = 'cu_f136970b18e34ef1bb8d497a2dd70bb1';
   const CHECKLY_ACCOUNT = '6f519222-f81d-43ab-bb93-18a75cf8bef1';
+  const CHECKLY_BASE    = 'https://api.checklyhq.com/v1';
 
-  // ── Gọi Checkly qua Nginx proxy ──
+  // ── Gọi Checkly API trực tiếp (GitHub Pages không có proxy) ──
   async function fetchViaProxy(endpoint) {
-    const proxyUrl = '/checkly-api' + endpoint;
-    const res = await fetch(proxyUrl);
+    const res = await fetch(CHECKLY_BASE + endpoint, {
+      headers: {
+        'Authorization':    'Bearer ' + CHECKLY_API_KEY,
+        'X-Checkly-Account': CHECKLY_ACCOUNT,
+      },
+    });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return res.json();
   }
@@ -94,17 +99,40 @@
       this._setLoading(true);
 
       try {
-        const [checksRaw, resultsRaw] = await Promise.all([
-          fetchViaProxy('/checks?limit=30'),
-          fetchViaProxy('/check-results?limit=20'),
-        ]);
+        // Thử lấy API checks trước, nếu không có thì lấy heartbeats
+        const checksRaw = await fetchViaProxy('/checks?limit=30').catch(() => null);
+        _checks = checksRaw
+          ? (Array.isArray(checksRaw) ? checksRaw : (checksRaw.results || []))
+          : [];
 
-        _checks  = Array.isArray(checksRaw)  ? checksRaw  : (checksRaw.results  || []);
-        _results = Array.isArray(resultsRaw) ? resultsRaw : (resultsRaw.results || []);
+        // Nếu không có API checks, lấy heartbeats
+        if (_checks.length === 0) {
+          const hbRaw = await fetchViaProxy('/heartbeats?limit=30').catch(() => null);
+          if (hbRaw) {
+            const hbs = Array.isArray(hbRaw) ? hbRaw : (hbRaw.results || []);
+            _checks = hbs.map(h => ({
+              id:     h.id,
+              name:   h.name,
+              type:   'HEARTBEAT',
+              status: h.hasFailures ? 'FAILING' : h.activated === false ? 'DEGRADED' : 'PASSING',
+            }));
+          }
+        }
+
+        // Lấy recent results từ check-results của từng check (lấy tối đa 3 check đầu)
+        const resultPromises = _checks.slice(0, 6).map(c =>
+          fetchViaProxy(`/checks/${c.id}/check-results?limit=3`)
+            .then(r => (Array.isArray(r) ? r : (r.results || [])).map(x => ({ ...x, checkName: c.name })))
+            .catch(() => [])
+        );
+        const nestedResults = await Promise.all(resultPromises);
+        _results = nestedResults.flat().sort((a, b) =>
+          new Date(b.startedAt || b.created_at || 0) - new Date(a.startedAt || a.created_at || 0)
+        );
 
         if (_checks.length === 0) this._useMock();
       } catch (e) {
-        console.warn('Checkly proxy error:', e);
+        console.warn('Checkly API error:', e);
         this._useMock();
       }
 
