@@ -1,0 +1,6 @@
+venv/
+.env
+.env.sandbox
+src/agent/__pycache__
+web_ui/__pycache__
+tmp
