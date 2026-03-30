@@ -1,0 +1,15 @@
+# Navigation and Login to FPT Cloud Marketplace## Overview
+### Task
+Navigate to the FPT Cloud Marketplace homepage and log in using provided credentials.
+### Target
+Successfully reach the FPT Cloud Marketplace homepage and authenticate with the test account.
+## Test Process
+### Steps process
+1. Navigate to FPT Cloud Marketplace homepage (https://marketplace.fptcloud.com/en) - Target: Load the homepage - Status: Success
+2. Click 'Sign in/Sign up' button - Target: Open the login interface - Status: Success
+3. Click 'Continue with FPT ID' - Target: Proceed to the FPT ID login page - Status: Success
+4. Enter username and password, then click 'Sign in' - Target: Authenticate and access the marketplace - Status: Success
+### Final result
+Status: Success. The user successfully navigated to the FPT Cloud Marketplace homepage and logged in using the provided credentials. The page redirected to the main marketplace page, showing user-specific information like account balance, confirming the successful login.
+## Analysis
+The test case was executed successfully, demonstrating that the navigation and login flow for the FPT Cloud Marketplace is functional. The provided credentials were valid, and the authentication process worked as expected. No issues were encountered during the execution of the steps.
