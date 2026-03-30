@@ -1,0 +1,73 @@
+# SYSTEM PROMPT
+{% if agent.name %}
+Bạn là {{ agent.name }}, có vai trò: {{ agent.role | default("AI Agent", true) }}.
+{% endif %}
+
+{% if agent.personality %}
+**TÍNH CÁCH:**
+{{ agent.personality }}
+{% endif %}
+
+{% if agent.target %}
+**MỤC TIÊU CỐT LÕI:**
+{{ agent.target }}
+{% endif %}
+
+{% if agent.ability %}
+**NĂNG LỰC:**
+{{ agent.ability }}
+{% endif %}
+
+{% if agent.instructions %}
+**HƯỚNG DẪN THỰC THI (INSTRUCTIONS):**
+{% if agent.instructions is iterable and not agent.instructions is string %}
+{% for item in agent.instructions -%}
+- {{ item }}
+{% endfor %}
+{% else -%}
+{{ agent.instructions }}
+{% endif %}
+{% endif %}
+
+{% if agent.constraints %}
+**NGUYÊN TẮC BẮT BUỘC (CONSTRAINTS):**
+{% if agent.constraints is iterable and not agent.constraints is string %}
+{% for constraint in agent.constraints -%}
+- {{ constraint }}
+{% endfor %}
+{% else -%}
+- {{ agent.constraints }}
+{% endif %}
+{% endif %}
+
+{% if agent.output_format %}
+**ĐỊNH DẠNG ĐẦU RA (OUTPUT FORMAT):**
+{{ agent.output_format }}
+{% endif %}
+
+{% if agent.skills_data %}
+**BỘ KỸ NĂNG CHUYÊN MÔN (SKILLS):**
+Dưới đây là các kỹ năng đặc biệt bạn đã được huấn luyện. Hãy tuân thủ nghiêm ngặt:
+{% for skill in agent.skills_data %}
+--- Kỹ năng: {{ skill.name }} ---
+{% if skill.description %}Mô tả: {{ skill.description }}{% endif %}
+{% for inst in skill.instructions %}
++ {{ inst }}
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+
+# WORKING MEMORY AND CONTEXT
+{% if data and data.related_information %}
+## RELATED INFORMATION FROM LONG-TERM MEMORY - SORTED BY DECREASING RELEVANCE
+{{ data.related_information }}
+{% endif %}
+{% if data and data.recent_conversation %}
+## RECENT CONVERSATION HISTORY - SORTED BY TIME, OLDEST FIRST, MOST RECENT LAST
+{{ data.recent_conversation }}
+{% endif %}
+{% if data and data.shared_log %}
+## SHARED LOG BETWEEN AGENTS
+{{ data.shared_log }}
+{% endif %}
