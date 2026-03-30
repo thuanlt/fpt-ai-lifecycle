@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>QC-AGENT | Synthetic Architect Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-tertiary": "#00390a",
+                "on-primary-fixed-variant": "#004f58",
+                "on-tertiary-fixed-variant": "#005313",
+                "background": "#131313",
+                "tertiary": "#b6ffae",
+                "surface-bright": "#393939",
+                "on-primary-fixed": "#001f24",
+                "inverse-on-surface": "#313030",
+                "surface-container": "#201f1f",
+                "on-tertiary-fixed": "#002204",
+                "on-secondary-container": "#aab7bf",
+                "outline-variant": "#3b494c",
+                "secondary-fixed": "#d7e4ec",
+                "tertiary-container": "#82e780",
+                "on-secondary-fixed": "#111d23",
+                "on-tertiary-container": "#00681a",
+                "surface-container-low": "#1c1b1b",
+                "on-secondary-fixed-variant": "#3c494f",
+                "on-primary-container": "#00626e",
+                "inverse-surface": "#e5e2e1",
+                "secondary-fixed-dim": "#bbc8d0",
+                "primary-fixed": "#9cf0ff",
+                "surface-variant": "#353534",
+                "surface": "#131313",
+                "error": "#ffb4ab",
+                "surface-container-high": "#2a2a2a",
+                "inverse-primary": "#006875",
+                "surface-tint": "#00daf3",
+                "primary": "#c3f5ff",
+                "secondary-container": "#3c494f",
+                "primary-container": "#00e5ff",
+                "surface-container-highest": "#353534",
+                "on-error-container": "#ffdad6",
+                "surface-dim": "#131313",
+                "secondary": "#bbc8d0",
+                "on-secondary": "#263238",
+                "outline": "#849396",
+                "on-primary": "#00363d",
+                "on-surface": "#e5e2e1",
+                "tertiary-fixed": "#94f990",
+                "error-container": "#93000a",
+                "primary-fixed-dim": "#00daf3",
+                "tertiary-fixed-dim": "#78dc77",
+                "surface-container-lowest": "#0e0e0e",
+                "on-surface-variant": "#bac9cc",
+                "on-error": "#690005",
+                "on-background": "#e5e2e1"
+              },
+              fontFamily: {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "label": ["Inter"],
+                "mono": ["JetBrains Mono"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b494c; border-radius: 10px; }
+        .glow-primary { box-shadow: 0 0 15px rgba(0, 229, 255, 0.15); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#131313] shadow-[0_0_20px_rgba(0,218,243,0.06)] font-['Space_Grotesk'] tracking-tight antialiased">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-[#e5e2e1] tracking-tighter">KINETIC INTELLIGENCE</span>
+<div class="hidden md:flex items-center gap-4 px-4 py-1.5 bg-surface-container-low rounded-lg border border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="text-[10px] font-mono text-outline uppercase tracking-widest">System Health:</span>
+<span class="text-[10px] font-mono text-on-surface">Qdrant Connected</span>
+</div>
+<div class="w-px h-3 bg-outline-variant/30"></div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-outline uppercase tracking-widest">Cloud Gateway:</span>
+<span class="text-[10px] font-mono text-tertiary">Active</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-6 mr-4">
+<span class="material-symbols-outlined text-[#3b494c] hover:bg-[#353534] transition-colors duration-200 cursor-pointer p-2 rounded" data-icon="hub">hub</span>
+<span class="material-symbols-outlined text-[#3b494c] hover:bg-[#353534] transition-colors duration-200 cursor-pointer p-2 rounded" data-icon="database">database</span>
+<span class="material-symbols-outlined text-[#3b494c] hover:bg-[#353534] transition-colors duration-200 cursor-pointer p-2 rounded" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-4rem)] flex flex-col py-4 bg-[#1c1b1b] w-64 font-['Inter'] text-sm font-medium border-r border-outline-variant/5">
+<div class="px-6 mb-8">
+<div class="text-lg font-black text-[#00E5FF] tracking-tighter mb-1">SYNTHETIC ARCHITECT</div>
+<div class="text-[10px] font-mono opacity-50 text-on-surface">v2.4.0-STABLE</div>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center gap-3 px-4 py-3 bg-[#353534] text-[#00E5FF] border-r-4 border-[#00E5FF] rounded-r-lg active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#e5e2e1] opacity-70 hover:bg-[#2a2a2a] hover:opacity-100 transition-all active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="storage">storage</span>
+                Memory
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#e5e2e1] opacity-70 hover:bg-[#2a2a2a] hover:opacity-100 transition-all active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="Route">route</span>
+                Fast Track
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#e5e2e1] opacity-70 hover:bg-[#2a2a2a] hover:opacity-100 transition-all active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-4 mb-6">
+<div class="flex items-center gap-2 mb-2 px-1">
+<span class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#b6ffae]"></span>
+<span class="text-[10px] font-mono text-tertiary uppercase tracking-widest">System Ready for AI Loop</span>
+</div><button class="w-full py-3 bg-primary-container text-on-primary rounded-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-primary-container/10 animate-pulse" title="Triggers the Workflow Hierarchical Loop (Multi-Agent System)">
+<span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+                INITIALIZE AGENT
+            </button>
+</div>
+<div class="mt-auto px-3 border-t border-outline-variant/10 pt-4 space-y-1">
+<div class="flex items-center gap-3 px-4 py-2 text-[#e5e2e1] opacity-50 text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="sensors">sensors</span>
+                System Health
+            </div>
+<div class="flex items-center gap-3 px-4 py-2 text-[#e5e2e1] opacity-50 text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+                Logs
+            </div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 mt-16 p-6 h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
+<!-- Metrics Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150"></div>
+<div class="text-xs font-mono text-outline uppercase mb-2">Test Cases Generated</div>
+<div class="text-3xl font-headline font-bold text-on-surface">14,282</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-tertiary">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span>
+                    +12% vs last session
+                </div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10">
+<div class="text-xs font-mono text-outline uppercase mb-2">Avg AI Latency</div>
+<div class="text-3xl font-headline font-bold text-primary-fixed-dim">112.4s</div>
+<div class="mt-2 w-full bg-surface-container-high h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[64%]"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10">
+<div class="text-xs font-mono text-outline uppercase mb-2">Pushed to Jira</div>
+<div class="text-3xl font-headline font-bold text-on-surface">891</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-outline">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+                    99.2% success rate
+                </div>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-6">
+<!-- AI Agent Fleet (Left Column) -->
+<div class="col-span-12 lg:col-span-4 space-y-4">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-sm font-headline font-bold uppercase tracking-widest text-outline">Agent Fleet</h2>
+<span class="text-[10px] font-mono text-tertiary px-2 py-0.5 bg-tertiary/10 rounded">ACTIVE: 3</span>
+</div>
+<!-- Orchestrator Card -->
+<div class="bg-surface-container-high p-4 rounded-xl border border-primary/20 glow-primary group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="neurology">neurology</span>
+</div><div class="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="Agent Settings">
+<span class="material-symbols-outlined text-[14px]">settings</span>
+</button>
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="View Agent Logs">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+</button>
+</div>
+<div>
+<div class="text-sm font-bold">Orchestrator</div>
+<div class="text-[10px] font-mono text-outline">CTX-ROOT-01</div>
+</div><div class="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="Agent Settings">
+<span class="material-symbols-outlined text-[14px]">settings</span>
+</button>
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="View Agent Logs">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 bg-surface-container-highest rounded text-[10px] font-bold text-primary animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                            WORKING
+                        </div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-mono">
+<span class="text-outline">Sub-task Allocation</span>
+<span>88%</span>
+</div>
+<div class="h-1 bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[88%]"></div>
+</div>
+</div>
+</div>
+<!-- Verifier Card -->
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="policy">policy</span>
+</div><div class="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="Agent Settings">
+<span class="material-symbols-outlined text-[14px]">settings</span>
+</button>
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="View Agent Logs">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+</button>
+</div>
+<div>
+<div class="text-sm font-bold">Verifier</div>
+<div class="text-[10px] font-mono text-outline">VAL-NODE-04</div>
+</div><div class="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="Agent Settings">
+<span class="material-symbols-outlined text-[14px]">settings</span>
+</button>
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="View Agent Logs">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 bg-surface-container-highest rounded text-[10px] font-bold text-outline">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                            IDLE
+                        </div>
+</div>
+<div class="text-[10px] text-outline italic">Waiting for Executor completion...</div>
+</div>
+<!-- Executor Card -->
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 group">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-error-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="precision_manufacturing">precision_manufacturing</span>
+</div><div class="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="Agent Settings">
+<span class="material-symbols-outlined text-[14px]">settings</span>
+</button>
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="View Agent Logs">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+</button>
+</div>
+<div>
+<div class="text-sm font-bold">Executor</div>
+<div class="text-[10px] font-mono text-outline">EXE-UNIT-09</div>
+</div><div class="flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="Agent Settings">
+<span class="material-symbols-outlined text-[14px]">settings</span>
+</button>
+<button class="p-1 hover:bg-surface-container-highest rounded text-outline hover:text-primary transition-colors" title="View Agent Logs">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 bg-surface-container-highest rounded text-[10px] font-bold text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary shadow-[0_0_8px_#b6ffae]"></span>
+                            SELF-HEALING
+                        </div>
+</div>
+<div class="p-2 bg-surface-container-lowest rounded border-l-2 border-tertiary text-[10px] font-mono text-tertiary/80">
+                        [RECOVERY]: Resolving stale WebDriver context...
+                    </div>
+</div>
+</div>
+<!-- Memory Logs & Task Progress (Center/Right Column) -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<!-- Shared Memory Logs -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 flex flex-col h-[400px]">
+<div class="flex items-center justify-between px-4 py-3 border-b border-outline-variant/5 bg-surface-container-low rounded-t-xl">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="memory">memory</span>
+<span class="text-xs font-mono uppercase tracking-widest text-on-surface">Shared Memory Logs (Real-time)</span>
+</div>
+<div class="flex gap-1"><div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 mr-2">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="text-[9px] font-mono text-outline uppercase">Status: Listen</span>
+</div>
+<button class="flex items-center gap-1 px-2 py-1 hover:bg-surface-container-highest rounded text-[10px] text-outline hover:text-on-surface transition-colors border border-outline-variant/20">
+<span class="material-symbols-outlined text-[12px]">delete_sweep</span>
+    Clear Logs
+  </button>
+<button class="flex items-center gap-1 px-2 py-1 hover:bg-surface-container-highest rounded text-[10px] text-outline hover:text-on-surface transition-colors border border-outline-variant/20">
+<span class="material-symbols-outlined text-[12px]">ios_share</span>
+    Export
+  </button>
+</div></div>
+</div>
+<div class="flex-1 overflow-y-auto p-4 font-mono text-[11px] space-y-2 custom-scrollbar">
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:01]</span>
+<span class="text-on-surface"><span class="text-primary">[SYSTEM]</span>: BROADCAST_INTENT: Initialize regression suite #882</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:03]</span>
+<span class="text-on-surface"><span class="text-tertiary-fixed">[MEM_SYNC]</span>: Verifier pulling schema context from Vector DB... <span class="text-tertiary">DONE</span></span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:05]</span>
+<span class="text-on-surface"><span class="text-error">[RETRY]</span>: Executor failed element focus. <span class="text-outline">Retry 3/20 - Verifier assessing output...</span></span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:08]</span>
+<span class="text-on-surface"><span class="text-primary">[AGENT]</span>: Orchestrator re-routing task instructions to EXE-UNIT-09</span>
+</div>
+<div class="flex gap-4 bg-primary/5 p-1 rounded">
+<span class="text-outline shrink-0">[14:22:12]</span>
+<span class="text-on-surface"><span class="text-primary-fixed-dim">[STATUS]</span>: Instruction breakdown: <span class="text-primary">INPROGRESS</span></span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:15]</span>
+<span class="text-on-surface"><span class="text-tertiary">[MEM_SYNC]</span>: Handshake confirmed between Orchestrator and Verifier</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:18]</span>
+<span class="text-on-surface"><span class="text-outline">[LOG]</span>: Trace exception captured: TRACE_EXCEPTION_04X. Analyzing...</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:20]</span>
+<span class="text-on-surface"><span class="text-tertiary-fixed">[SELF_HEAL]</span>: Attempting context reset for Chrome Instance #4</span>
+</div>
+<div class="flex gap-4">
+<span class="text-outline shrink-0">[14:22:24]</span>
+<span class="text-on-surface"><span class="text-primary">[SYSTEM]</span>: Pushing partial metrics to Telemetry Sink...</span>
+</div>
+</div>
+</div>
+<!-- Active Task Progress -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-sm font-headline font-bold uppercase tracking-widest text-outline">Active Task: BatchTask JSON #204</h2>
+<div class="text-xl font-headline font-bold text-on-surface">62% <span class="text-xs font-normal text-outline">Complete</span></div>
+</div>
+<div class="relative pl-8 border-l border-outline-variant/20 space-y-6">
+<!-- Step 1 -->
+<div class="relative">
+<div class="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary font-bold" data-icon="check">check</span>
+</div>
+<div class="text-xs font-bold mb-1">Context Analysis</div>
+<div class="text-[10px] text-outline font-mono">Retrieved 12 relevant documentation nodes from Qdrant.</div>
+</div>
+<!-- Step 2 -->
+<div class="relative">
+<div class="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+<div class="w-1.5 h-1.5 rounded-full bg-on-primary animate-ping"></div>
+</div>
+<div class="text-xs font-bold text-primary mb-1">Instruction Breakdown</div>
+<div class="grid grid-cols-2 gap-2 mt-2">
+<div class="p-2 bg-surface-container-high rounded text-[9px] font-mono border-l-2 border-primary">
+<span class="text-outline">SUB_01:</span> DOM Mapping
+                                </div>
+<div class="p-2 bg-surface-container-high rounded text-[9px] font-mono border-l-2 border-primary">
+<span class="text-outline">SUB_02:</span> Assert Logic
+                                </div>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative opacity-30">
+<div class="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-outline-variant border border-outline flex items-center justify-center"></div>
+<div class="text-xs font-bold mb-1">Jira Ticket Generation</div>
+<div class="text-[10px] text-outline font-mono">Pending verification cycle completion.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Visual Polish: Decorative Elements -->
+<div class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-tertiary to-primary opacity-20"></div>
+<div class="fixed top-1/2 -right-64 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="fixed bottom-0 -left-64 w-96 h-96 bg-tertiary/5 rounded-full blur-[100px] pointer-events-none"></div>
+</body></html>
