@@ -1,0 +1,17 @@
+{
+  "mcp_servers": {
+    "playwright": {
+      "protocol": "http",
+      "url": "http://host.docker.internal:8931/mcp"
+    },
+    "filesystem": {
+      "protocol": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/app/tmp"
+      ]
+    }
+  }
+}
