@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>QC-AGENT | Synthetic Architect Dashboard</title>
+    <!-- Tailwind with plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "background": "#131313",
+                "surface": "#131313",
+                "surface-container-low": "#1c1b1b",
+                "surface-container-high": "#2a2a2a",
+                "surface-container-highest": "#353534",
+                "surface-container-lowest": "#0e0e0e",
+                "primary": "#c3f5ff",
+                "primary-container": "#00e5ff",
+                "on-primary": "#00363d",
+                "secondary-container": "#3c494f",
+                "tertiary": "#b6ffae",
+                "tertiary-container": "#82e780",
+                "outline-variant": "#3b494c",
+                "on-surface": "#e5e2e1",
+                "on-surface-variant": "#bac9cc",
+                "error": "#ffb4ab",
+                "error-container": "#93000a"
+              },
+              fontFamily: {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "mono": ["JetBrains Mono"]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b494c; border-radius: 10px; }
+        .glow-primary { box-shadow: 0 0 15px rgba(0, 229, 255, 0.15); }
+        .glass-panel { background: rgba(53, 53, 52, 0.6); backdrop-filter: blur(12px); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        @keyframes progress-ind { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .animate-progress-ind { animation: progress-ind 1.5s infinite linear; width: 50%; }
+        
+        .scanline {
+            position: fixed; inset: 0; pointer-events: none; opacity: 0.03;
+            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%),
+                        linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06));
+            background-size: 100% 2px, 3px 100%; z-index: 1000;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body overflow-hidden">
+    <div class="scanline"></div>
+
+    <!-- TOP APP BAR -->
+    <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-surface shadow-[0_0_20px_rgba(0,218,243,0.06)] border-b border-outline-variant/10">
+        <div class="flex items-center gap-8">
+            <span class="text-xl font-bold font-headline tracking-tighter text-on-surface">KINETIC INTELLIGENCE</span>
+            <div class="hidden md:flex items-center gap-4 px-4 py-1.5 bg-surface-container-low rounded-lg border border-outline-variant/10">
+                <div class="flex items-center gap-2">
+                    <span id="db-status-dot" class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                    <span class="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest">Vector Hub:</span>
+                    <span id="db-status-text" class="text-[10px] font-mono text-on-surface uppercase">Connected</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div id="fleet-status-bar" class="flex gap-1">
+                <!-- Status squares added by JS -->
+            </div>
+            <div class="w-px h-6 bg-outline-variant/30"></div>
+            <div class="flex gap-2">
+                <span class="material-symbols-outlined text-outline-variant hover:bg-surface-container-highest p-2 rounded cursor-pointer transition-colors">notifications</span>
+                <span class="material-symbols-outlined text-outline-variant hover:bg-surface-container-highest p-2 rounded cursor-pointer transition-colors">account_circle</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- SIDE NAV BAR -->
+    <aside class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 flex flex-col py-4 bg-surface-container-low border-r border-outline-variant/10 z-40">
+        <div class="px-6 mb-8">
+            <div class="text-lg font-black text-primary-container font-headline tracking-tighter mb-1 uppercase">Synthetic Architect</div>
+            <div class="text-[10px] font-mono opacity-50">v2.4.0-STABLE</div>
+        </div>
+        
+        <nav class="flex-1 px-3 space-y-1">
+            <button class="nav-tab active w-full flex items-center gap-3 px-4 py-3 bg-surface-container-highest text-primary-container border-r-4 border-primary-container rounded-r-lg transition-all" data-target="dashboard-view">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="text-sm font-semibold">Dashboard</span>
+            </button>
+            <button class="nav-tab w-full flex items-center gap-3 px-4 py-3 text-on-surface opacity-70 hover:bg-surface-container-high hover:opacity-100 transition-all rounded-lg" data-target="memory-view">
+                <span class="material-symbols-outlined">storage</span>
+                <span class="text-sm font-semibold">Memory Hub</span>
+            </button>
+            <button class="nav-tab w-full flex items-center gap-3 px-4 py-3 text-on-surface opacity-70 hover:bg-surface-container-high hover:opacity-100 transition-all rounded-lg" data-target="fast-track-view">
+                <span class="material-symbols-outlined">route</span>
+                <span class="text-sm font-semibold">Fast Track</span>
+            </button>
+             <button class="nav-tab w-full flex items-center gap-3 px-4 py-3 text-on-surface opacity-70 hover:bg-surface-container-high hover:opacity-100 transition-all rounded-lg" data-target="playground-view">
+                <span class="material-symbols-outlined">psychology</span>
+                <span class="text-sm font-semibold">Playground</span>
+            </button>
+        </nav>
+        
+        <div class="px-4 py-4 border-t border-outline-variant/10 mt-auto">
+             <div class="mb-4 bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/20">
+                <div class="text-[10px] font-mono text-on-surface-variant uppercase mb-2">Neural Engine</div>
+                <div id="planner-status-name" class="text-xs font-bold text-primary mb-1">...</div>
+                <div id="tester-status-name" class="text-[9px] font-mono text-outline-variant uppercase">...</div>
+            </div>
+            <button class="w-full py-2.5 bg-primary-container text-on-primary font-bold text-xs tracking-widest rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-container/10">
+                INITIALIZE AGENT
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="ml-64 mt-16 p-6 h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar bg-surface">
+        
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard-view" class="tab-content active transition-all duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform"></div>
+                    <div class="text-[10px] font-mono text-on-surface-variant uppercase mb-2">Total Ingested Chunks</div>
+                    <div id="chunk-count" class="text-3xl font-headline font-bold">14,282</div>
+                    <div class="mt-2 flex items-center gap-2 text-[10px] text-tertiary">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        +12% vs last session
+                    </div>
+                </div>
+                <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+                    <div class="text-[10px] font-mono text-on-surface-variant uppercase mb-2">Avg AI Response</div>
+                    <div class="text-3xl font-headline font-bold text-primary">112.4s</div>
+                    <div class="mt-2 w-full bg-surface-container-high h-1 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full w-[64%]"></div>
+                    </div>
+                </div>
+                <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+                    <div class="text-[10px] font-mono text-on-surface-variant uppercase mb-2">Jira Linked Cases</div>
+                    <div id="jira-case-count" class="text-3xl font-headline font-bold text-on-surface">891</div>
+                    <div class="mt-2 flex items-center gap-2 text-[10px] text-on-surface-variant">
+                        <span class="material-symbols-outlined text-sm">check_circle</span>
+                        Verified Integration
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8">
+                <div class="col-span-12 lg:col-span-4 space-y-6">
+                    <h2 class="text-sm font-headline font-bold uppercase tracking-widest text-on-surface-variant px-2">Agent Fleet Status</h2>
+                    <div id="agent-cards" class="space-y-4">
+                        <div class="bg-surface-container-high p-4 rounded-xl border border-primary/20 glow-primary">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary">
+                                        <span class="material-symbols-outlined">neurology</span>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold">Orchestrator</div>
+                                        <div class="text-[10px] font-mono text-on-surface-variant">CTX-ROOT-01</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-surface-container-highest rounded text-[9px] font-bold text-primary animate-pulse uppercase tracking-wider">Working</span>
+                            </div>
+                            <div class="h-1 bg-surface-container-lowest rounded-full overflow-hidden">
+                                <div class="bg-primary h-full w-[88%]"></div>
+                            </div>
+                        </div>
+                        <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded bg-tertiary/10 flex items-center justify-center text-tertiary">
+                                        <span class="material-symbols-outlined">policy</span>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold">Verifier</div>
+                                        <div class="text-[10px] font-mono text-on-surface-variant">VAL-NODE-04</div>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 bg-surface-container-highest rounded text-[9px] font-bold text-on-surface-variant uppercase tracking-wider">Idle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-12 lg:col-span-8 flex flex-col h-[500px]">
+                    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 flex flex-col h-full">
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-outline-variant/10 bg-surface-container-low">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-primary">memory</span>
+                                <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-on-surface-variant">Shared Memory Logs (Real-time)</span>
+                            </div>
+                            <button onclick="loadMemoryFiles()" class="text-[9px] text-primary hover:underline font-bold uppercase tracking-widest">Archives</button>
+                        </div>
+                        <div id="live-log-stream" class="flex-1 overflow-y-auto p-4 font-mono text-[11px] leading-relaxed space-y-1 custom-scrollbar">
+                            <div class="text-on-surface-variant/40">[SYSTEM]: MONITORING AGENT FLEET...</div>
+                            <div class="text-on-surface-variant/40">[STATUS]: VECTOR HUB ACTIVE...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMORY HUB VIEW -->
+        <div id="memory-view" class="tab-content transition-all duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 flex items-center justify-between group hover:border-primary/20 transition-all">
+                    <div>
+                        <div class="text-[10px] font-mono text-on-surface-variant uppercase mb-1">Total Knowledge Chunks</div>
+                        <div id="memory-chunk-count" class="text-2xl font-headline font-bold text-primary">0</div>
+                    </div>
+                    <span class="material-symbols-outlined text-primary/20 text-3xl group-hover:text-primary/40 transition-colors">database</span>
+                </div>
+                <div id="last-ingestion-card" class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 flex items-center justify-between hidden animate-in fade-in slide-in-from-right-4 duration-500">
+                    <div class="min-w-0 flex-1">
+                        <div class="text-[10px] font-mono text-tertiary uppercase mb-1">Last Ingestion</div>
+                        <div id="last-ingestion-info" class="text-sm font-bold text-on-surface truncate">Processed 0 chunks</div>
+                        <div id="last-ingestion-source" class="text-[9px] font-mono text-outline-variant truncate">Source: ...</div>
+                    </div>
+                    <span class="material-symbols-outlined text-tertiary/40 text-3xl ml-4">check_circle</span>
+                </div>
+            </div>
+            
+            <div class="flex items-end justify-between mb-6">
+                <div>
+                    <h3 class="text-sm font-bold text-on-surface uppercase tracking-widest">Ingestion Interface</h3>
+                    <p class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">Select data source protocol</p>
+                </div>
+                <div class="flex gap-1 p-1 bg-surface-container-low rounded-lg border border-outline-variant/20">
+                    <button class="data-type-btn active px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all bg-surface-container-highest text-primary" data-type="text">Text</button>
+                    <button class="data-type-btn px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all text-on-surface-variant hover:text-on-surface" data-type="url">URL</button>
+                    <button class="data-type-btn px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all text-on-surface-variant hover:text-on-surface" data-type="file">File</button>
+                </div>
+            </div>
+            
+            <form id="memory-form" class="space-y-6">
+                <div id="text-input-container" class="relative">
+                    <textarea id="text-input" class="w-full bg-surface-container-low border border-outline-variant/20 text-on-surface rounded-xl p-6 focus:ring-1 focus:ring-primary focus:border-primary outline-none font-mono text-sm min-h-[400px]" placeholder="[STYLIZED_INPUT]: Paste technical documentation, requirements, or code snippets here..."></textarea>
+                    <div class="absolute bottom-4 right-4 text-[10px] font-mono text-outline-variant uppercase">Markdown Supported</div>
+                </div>
+                <div id="url-input-container" class="hidden">
+                    <input id="url-input" type="url" class="w-full bg-surface-container-low border border-outline-variant/20 text-on-surface rounded-xl p-6 focus:ring-1 focus:ring-primary focus:border-primary outline-none text-sm" placeholder="https://docs.api.example.com/spec">
+                </div>
+                <div id="file-input-container" class="hidden">
+                    <div class="p-20 bg-surface-container-low border-2 border-dashed border-outline-variant/20 rounded-xl flex flex-col items-center justify-center gap-4 hover:border-primary/40 transition-colors cursor-pointer relative">
+                        <span class="material-symbols-outlined text-5xl text-outline-variant">cloud_upload</span>
+                        <div class="text-center">
+                            <p class="text-sm font-semibold text-on-surface-variant">Click to upload or drag & drop</p>
+                            <p class="text-[10px] text-outline-variant mt-1 uppercase tracking-[0.2em]">PDF, DOCX, XLSX, TXT, MD</p>
+                        </div>
+                        <input id="file-input" type="file" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end pt-4">
+                    <button type="submit" class="btn-primary w-64 py-3 bg-primary-container text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-primary/5">
+                        <span class="material-symbols-outlined text-sm">add_circle</span>
+                        INITIALIZE INGESTION
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- FAST TRACK VIEW -->
+        <div id="fast-track-view" class="tab-content transition-all duration-300">
+             <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-2xl font-bold font-headline text-on-surface uppercase italic tracking-tighter">Fast Track <span class="text-primary tracking-[0.2em] font-black">SDET</span></h2>
+                    <p class="text-sm text-on-surface-variant">Planning -> Forensic Scripting -> Neural Automation Pipeline.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="document.getElementById('ft-config-panel').classList.toggle('hidden')" class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low hover:bg-surface-container-high rounded-lg border border-outline-variant/20 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant transition-all">
+                        <span class="material-symbols-outlined text-sm">settings</span>
+                        Configure Runtime
+                    </button>
+                    <div class="flex items-center gap-3 bg-surface-container-low p-2 rounded-lg border border-outline-variant/10">
+                        <span class="text-[9px] text-on-surface-variant uppercase font-black tracking-widest">Auto-Push</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-auto-push" class="sr-only peer">
+                            <div class="w-8 h-4 bg-surface-container-highest rounded-full peer peer-checked:bg-primary after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ft-config-panel" class="hidden animate-in slide-in-from-top-4 duration-300 mb-6">
+                <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/20 grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[9px] uppercase font-black tracking-widest text-outline-variant pl-1">Jira Test Cycle</label>
+                        <div class="flex gap-2">
+                            <input id="cycle-id-input" type="text" value="NCPP-C302" class="flex-1 bg-surface-container-lowest border-none rounded p-2 text-xs font-mono focus:ring-1 focus:ring-primary">
+                            <button onclick="extractCycle()" class="bg-surface-container-highest p-2 rounded hover:text-primary transition-all"><span class="material-symbols-outlined text-xs">sync</span></button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[9px] uppercase font-black tracking-widest text-outline-variant pl-1">Project Identifier</label>
+                        <input id="project-key-input" type="text" value="NCPP" class="bg-surface-container-lowest border-none rounded p-2 text-xs font-mono focus:ring-1 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[9px] uppercase font-black tracking-widest text-outline-variant pl-1">Planner Model</label>
+                        <select id="planner-model-select" class="bg-surface-container-lowest border-none rounded p-2 text-xs font-mono focus:ring-1 focus:ring-primary text-primary">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[9px] uppercase font-black tracking-widest text-outline-variant pl-1">SDET Model</label>
+                        <select id="tester-model-select" class="bg-surface-container-lowest border-none rounded p-2 text-xs font-mono focus:ring-1 focus:ring-primary text-on-surface">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 mb-8">
+                <label class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-3 block">Neural Instruction Vector</label>
+                <textarea id="instruction-input" rows="4" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-xl p-4 text-sm focus:ring-1 focus:ring-primary outline-none transition-all focus:bg-surface-container-lowest" placeholder="Describe the test scenario (e.g. 'Test the Checkout with guest user and credit card')..."></textarea>
+                <div class="flex justify-between items-center mt-6">
+                     <button id="clear-db-button" class="text-[9px] font-black text-red-500/40 hover:text-red-500 uppercase tracking-widest transition-all">Format Vector DB</button>
+                     <button id="ft-submit-btn" class="px-10 py-3 bg-primary-container text-on-primary font-black text-xs tracking-widest rounded-lg flex items-center gap-3 hover:brightness-110 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] transition-all">
+                        <span class="material-symbols-outlined">bolt</span> 
+                        EXECUTE NEURAL PIPELINE
+                    </button>
+                </div>
+            </div>
+
+            <div id="planner-plan-box" class="hidden mb-8 animate-in fade-in duration-500">
+                <div class="bg-primary/5 border border-primary/20 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined text-primary">strategy</span>
+                        <h3 class="text-sm font-black uppercase tracking-widest text-primary">Global Strategic Plan</h3>
+                    </div>
+                    <p id="planner-overview-text" class="text-xs text-on-surface-variant leading-relaxed italic"></p>
+                </div>
+            </div>
+            
+            <div id="fast-track-results" class="space-y-8">
+                <!-- Filled by JS -->
+            </div>
+            
+            <div id="jira-push-actions" class="hidden mt-10 p-6 bg-surface-container-low border border-outline-variant/20 rounded-xl flex justify-between items-center animate-in slide-in-from-bottom-4">
+                <div class="flex items-center gap-3">
+                    <span id="selected-count" class="text-xs font-bold text-primary">0 cases selected</span>
+                </div>
+                <button id="push-selected-jira-btn" class="px-8 py-3 bg-primary text-on-primary font-black text-xs tracking-widest rounded-lg hover:brightness-110 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">publish</span>
+                    PUSH SELECTED TO JIRA
+                </button>
+            </div>
+        </div>
+        
+        <!-- PLAYGROUND VIEW -->
+        <div id="playground-view" class="tab-content transition-all duration-300">
+             <div class="mb-8">
+                <h2 class="text-2xl font-bold font-headline text-on-surface">Semantic Playground</h2>
+                <p class="text-sm text-on-surface-variant">Tra cứu trực tiếp nội dung từ bộ nhớ Vector (RAG Debugging).</p>
+            </div>
+            
+            <form id="retrieval-form" class="space-y-6">
+                <div class="bg-surface-container-low rounded-xl p-1 border border-outline-variant/20">
+                    <textarea id="query-input" rows="8" class="w-full bg-transparent border-none text-on-surface p-5 focus:ring-0 outline-none text-sm" placeholder="[QUERY]: Search knowledge base for specific technical rules or UI patterns..."></textarea>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Density (Top K):</span>
+                            <input type="number" id="top-k-input" value="3" min="1" class="w-20 bg-surface-container-low border-none rounded py-1 px-3 text-xs font-mono outline-none">
+                        </div>
+                    </div>
+                    <button type="submit" class="px-8 py-3 bg-tertiary-container text-on-tertiary-container font-black text-xs tracking-widest rounded-lg hover:brightness-110 active:scale-95 transition-all">
+                        RUN SEMANTIC RETRIEVAL
+                    </button>
+                </div>
+            </form>
+            <div id="retrieval-results" class="mt-10 space-y-4"></div>
+        </div>
+
+    </main>
+
+    <!-- RESPONSE NOTIFICATION -->
+    <div id="response-message" class="fixed bottom-6 right-6 p-4 rounded-xl glass-panel border border-primary/20 text-xs font-bold shadow-2xl z-[1001] transition-all hidden"></div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:5001';
+
+        // --- Navigation ---
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                navTabs.forEach(t => t.classList.remove('active', 'bg-surface-container-highest', 'text-primary-container', 'border-r-4', 'border-primary-container'));
+                navTabs.forEach(t => t.classList.add('opacity-70'));
+                
+                tab.classList.add('active', 'bg-surface-container-highest', 'text-primary-container', 'border-r-4', 'border-primary-container');
+                tab.classList.remove('opacity-70');
+
+                const targetId = tab.dataset.target;
+                tabContents.forEach(c => c.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+                
+                // Reset scroll position for tab separation
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // --- Data Type Tabs (Memory Hub) ---
+        const dataTypeBtns = document.querySelectorAll('.data-type-btn');
+        let currentDataType = 'text';
+
+        dataTypeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                dataTypeBtns.forEach(b => b.classList.remove('active', 'bg-surface-container-highest', 'text-primary'));
+                btn.classList.add('active', 'bg-surface-container-highest', 'text-primary');
+                currentDataType = btn.dataset.type;
+
+                document.getElementById('text-input-container').classList.add('hidden');
+                document.getElementById('url-input-container').classList.add('hidden');
+                document.getElementById('file-input-container').classList.add('hidden');
+                document.getElementById(`${currentDataType}-input-container`).classList.remove('hidden');
+            });
+        });
+
+        // --- Logging & Message System ---
+        const logsDiv = document.getElementById('live-log-stream');
+        const responseMessage = document.getElementById('response-message');
+
+        function console_log_ui(message, type = 'SYSTEM') {
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'flex gap-3 animate-in fade-in slide-in-from-left-2 duration-300';
+            
+            let colorClass = 'text-on-surface-variant';
+            let labelColor = 'text-primary';
+            
+            if (type === 'ERROR') { colorClass = 'text-error'; labelColor = 'text-error'; }
+            if (type === 'SUCCESS') { colorClass = 'text-tertiary'; labelColor = 'text-tertiary'; }
+            if (type === 'AI') { colorClass = 'text-primary'; labelColor = 'text-primary'; }
+
+            div.innerHTML = `
+                <span class="text-on-surface-variant/30 shrink-0 select-none">[${time}]</span>
+                <span class="${colorClass}"><span class="${labelColor} font-bold opacity-80">[${type}]</span>: ${message}</span>
+            `;
+            logsDiv.appendChild(div);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function showMessage(msg, isError = false) {
+            responseMessage.textContent = msg;
+            responseMessage.classList.remove('hidden');
+            if (isError) {
+                responseMessage.className = "fixed bottom-6 right-6 p-4 rounded-xl glass-panel border border-error/30 text-error text-xs font-bold shadow-2xl z-[1001] animate-pulse";
+                console_log_ui(msg, 'ERROR');
+            } else {
+                responseMessage.className = "fixed bottom-6 right-6 p-4 rounded-xl glass-panel border border-primary/30 text-primary text-xs font-bold shadow-2xl z-[1001]";
+                console_log_ui(msg, 'SUCCESS');
+            }
+            setTimeout(() => responseMessage.classList.add('hidden'), 5000);
+        }
+
+        // --- API INTEGRATIONS ---
+
+        // 1. Fetch System Info
+        const fetchSystemInfo = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/info`);
+                if (!response.ok) throw new Error('OFFLINE');
+                const data = await response.json();
+                
+                document.getElementById('db-status-text').innerText = 'CONNECTED';
+                document.getElementById('db-status-dot').className = 'w-2 h-2 rounded-full bg-tertiary animate-pulse';
+                const countFormatted = data.item_count.toLocaleString();
+                document.getElementById('chunk-count').innerText = countFormatted;
+                const memoryCount = document.getElementById('memory-chunk-count');
+                if (memoryCount) memoryCount.innerText = countFormatted;
+            } catch (err) {
+                document.getElementById('db-status-text').innerText = 'DISCONNECTED';
+                document.getElementById('db-status-dot').className = 'w-2 h-2 rounded-full bg-error animate-pulse';
+            }
+        };
+
+        // 1.1 Fetch Available Models
+        const fetchModels = async () => {
+           try {
+               const response = await fetch(`${API_BASE_URL}/models`);
+               const data = await response.json();
+               
+               const pSelect = document.getElementById('planner-model-select');
+               const tSelect = document.getElementById('tester-model-select');
+               
+               pSelect.innerHTML = '';
+               tSelect.innerHTML = '';
+               
+               data.models.forEach(m => {
+                   const op = document.createElement('option');
+                   op.value = m;
+                   op.text = m;
+                   pSelect.appendChild(op.cloneNode(true));
+                   tSelect.appendChild(op);
+               });
+               
+               pSelect.value = data.default_planner;
+               tSelect.value = data.default_tester;
+               
+               document.getElementById('planner-status-name').innerText = data.default_planner;
+               document.getElementById('tester-status-name').innerText = data.default_tester;
+           } catch (e) {
+                document.getElementById('planner-status-name').innerText = 'OFFLINE';
+                document.getElementById('tester-status-name').innerText = 'OFFLINE';
+           }
+        };
+
+        // 2. Execution History
+        const fetchExecutionHistory = async () => {
+            const bar = document.getElementById('fleet-status-bar');
+            try {
+                const response = await fetch(`${API_BASE_URL}/execution-history`);
+                const data = await response.json();
+                bar.innerHTML = '';
+                data.forEach(run => {
+                    const sq = document.createElement('div');
+                    sq.className = `w-1.5 h-1.5 rounded-sm ${run.status === 'PASS' ? 'bg-tertiary' : 'bg-error'}`;
+                    sq.title = `${run.id}: ${run.status}`;
+                    bar.appendChild(sq);
+                });
+            } catch (e) {}
+        };
+
+        // 3. Memory Ingestion
+        document.getElementById('memory-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span> INGESTING...';
+            console_log_ui(`Initializing ingestion via [${currentDataType.toUpperCase()}]...`, 'SYSTEM');
+
+            try {
+                let endpoint = '', payload, headers = {'Content-Type': 'application/json'};
+                if (currentDataType === 'text') {
+                    endpoint = '/add-text';
+                    payload = JSON.stringify({text: document.getElementById('text-input').value});
+                } else if (currentDataType === 'url') {
+                    endpoint = '/add-url';
+                    payload = JSON.stringify({url: document.getElementById('url-input').value});
+                } else if (currentDataType === 'file') {
+                    endpoint = '/add-file';
+                    const fileInput = document.getElementById('file-input');
+                    if (!fileInput.files.length) throw new Error("No file selected.");
+                    const formData = new FormData();
+                    formData.append('file', fileInput.files[0]);
+                    payload = formData;
+                    headers = {};
+                }
+
+                const res = await fetch(API_BASE_URL + endpoint, {method: 'POST', headers, body: payload});
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error);
+                
+                showMessage(result.message);
+                
+                // Update Last Ingestion Card
+                const lastCard = document.getElementById('last-ingestion-card');
+                const lastInfo = document.getElementById('last-ingestion-info');
+                const lastSource = document.getElementById('last-ingestion-source');
+                
+                if (lastCard && result.chunk_count !== undefined) {
+                    lastCard.classList.remove('hidden');
+                    lastInfo.innerText = `Processed ${result.chunk_count} chunk${result.chunk_count > 1 ? 's' : ''}`;
+                    let sourceText = "Direct Text Input";
+                    if (currentDataType === 'url') sourceText = document.getElementById('url-input').value;
+                    if (currentDataType === 'file') sourceText = document.getElementById('file-input').files[0].name;
+                    lastSource.innerText = `Source: ${sourceText}`;
+                }
+
+                e.target.reset();
+                fetchSystemInfo();
+            } catch (err) {
+                showMessage(err.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm">add_circle</span> INITIALIZE INGESTION';
+            }
+        });
+
+        // 4. Fast Track Pipeline
+        document.getElementById('ft-submit-btn').addEventListener('click', async () => {
+             const resultsDiv = document.getElementById('fast-track-results');
+             const instruction = document.getElementById('instruction-input').value;
+             if (!instruction) return showMessage("Please enter instructions.", true);
+
+             resultsDiv.innerHTML = `
+                <div class="glass-panel p-10 rounded-xl border border-primary/20 flex flex-col items-center gap-6 animate-in fade-in duration-500">
+                    <div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+                        <div class="h-full bg-primary animate-progress-ind"></div>
+                    </div>
+                    <div class="text-xs font-mono text-primary uppercase font-bold tracking-[0.4em]">[SYSTEM]: NEURAL PIPELINE INITIALIZING...</div>
+                </div>
+             `;
+             console_log_ui("Orchestrator initiating BatchTask JSON generation...", "AI");
+
+             const submitBtn = document.getElementById('ft-submit-btn');
+             submitBtn.disabled = true;
+
+             try {
+                const cycle_id = document.getElementById('cycle-id-input').value;
+                const project_key = document.getElementById('project-key-input').value;
+                const planner_model = document.getElementById('planner-model-select').value;
+                const tester_model = document.getElementById('tester-model-select').value;
+
+                const res = await fetch(`${API_BASE_URL}/fast-track`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({instruction, cycle_id, project_key, planner_model, tester_model})
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                // Show Plan Overview
+                if (data.batch_task && data.batch_task.plan_overview) {
+                    document.getElementById('planner-plan-box').classList.remove('hidden');
+                    document.getElementById('planner-overview-text').innerText = data.batch_task.plan_overview;
+                }
+
+                resultsDiv.innerHTML = `
+                    <div class="p-5 bg-surface-container-high rounded-xl border border-outline-variant/20 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                             <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${data.overall_status === 'PASS' ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-error-container text-white'}">${data.overall_status}</span>
+                             <h3 class="text-xs font-bold font-headline uppercase tracking-widest">Cycle Finalized: ${cycle_id}</h3>
+                        </div>
+                        ${data.jira ? `<a href="${data.jira}" target="_blank" class="text-[10px] text-primary underline font-bold uppercase tracking-widest">Jira Evidence</a>` : ''}
+                    </div>
+                `;
+
+                data.results.forEach((r, taskIdx) => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 space-y-4 animate-in slide-in-from-bottom-4 duration-500';
+                    
+                    const hasMultiple = r.test_cases && r.test_cases.length > 1;
+                    
+                    let tabsHtml = '';
+                    if (hasMultiple) {
+                        tabsHtml = `
+                            <div class="flex gap-3 mb-6 overflow-x-auto pb-4 custom-scrollbar">
+                                ${r.test_cases.map((tc, tcIdx) => {
+                                    const isActive = tcIdx === 0;
+                                    const parentSect = tc.hierarchy && tc.hierarchy.length > 0 ? tc.hierarchy[tc.hierarchy.length - 1] : "";
+                                    return `
+                                    <div class="tc-card-wrapper relative flex items-center gap-3 group shrink-0">
+                                        <div onclick="switchTC(${taskIdx}, ${tcIdx})" 
+                                            id="tab-${taskIdx}-${tcIdx}"
+                                            class="tc-tab min-w-[280px] max-w-[320px] p-4 rounded-xl border cursor-pointer transition-all duration-300
+                                            ${isActive ? 'bg-surface-container-highest border-primary/40 shadow-xl shadow-primary/5' : 'bg-surface-container-low border-outline-variant/10 hover:border-outline-variant/30'}">
+                                            
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center gap-2">
+                                                    <span id="tc-badge-${taskIdx}-${tcIdx}" class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${isActive ? 'bg-primary text-on-primary' : 'bg-surface-container-highest text-on-surface-variant'}">${tc.id || 'NEW'}</span>
+                                                    <span class="text-[8px] font-mono text-outline-variant uppercase truncate max-w-[120px]">${parentSect}</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <input type="checkbox" data-task="${taskIdx}" data-tc="${tcIdx}" class="tc-selector w-3.5 h-3.5 rounded border-outline-variant/30 bg-surface-container-low text-primary focus:ring-primary/20 transition-all cursor-pointer" onclick="event.stopPropagation(); updateSelectedCount()">
+                                                    <span class="material-symbols-outlined text-xs ${isActive ? 'text-primary' : 'text-outline-variant opacity-0 group-hover:opacity-100'}">visibility</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="tc-desc-text-${taskIdx}-${tcIdx}" class="text-[11px] font-bold ${isActive ? 'text-on-surface' : 'text-on-surface-variant'} line-clamp-2 leading-snug">
+                                                ${tc.description}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }
+
+                    const initialTC = r.test_cases && r.test_cases.length > 0 ? r.test_cases[0] : {evidence: '', automation_code: ''};
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] font-mono text-outline-variant uppercase">${r.tester || 'SENIOR SDET'}</span>
+                                    <span id="tc-id-display-${taskIdx}" class="text-[10px] font-mono text-primary font-bold">${initialTC.id || r.jira_test_case_id || 'TC-NEW'}</span>
+                                </div>
+                                <h4 id="tc-desc-display-${taskIdx}" class="text-sm font-bold text-on-surface">${initialTC.description || r.target}</h4>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="manualPush(${taskIdx})" class="text-[9px] font-bold px-3 py-1.5 bg-surface-container-highest rounded-lg hover:text-primary transition-all uppercase tracking-widest">Manual Push</button>
+                                <span class="px-2 py-1 rounded text-[10px] font-black ${r.status === 'PASS' ? 'text-tertiary bg-tertiary/10' : 'text-error bg-error/10'}">${r.status}</span>
+                            </div>
+                        </div>
+                        
+                        ${tabsHtml}
+
+                        <div id="tc-detail-grid-${taskIdx}" class="grid grid-cols-2 gap-4 h-96 hidden animate-in zoom-in-95 duration-300">
+                            <div class="flex flex-col bg-surface-container-lowest rounded-lg border border-outline-variant/5 relative group">
+                                <div class="px-3 py-2 border-b border-outline-variant/10 text-[9px] font-bold text-outline-variant uppercase tracking-widest flex justify-between">
+                                    <span>Forensic Script</span>
+                                    <span class="opacity-0 group-hover:opacity-100 transition-opacity">Editable</span>
+                                </div>
+                                <textarea id="evidence-text-${taskIdx}" oninput="updateTcInMemory(${taskIdx}, 'evidence')" class="flex-1 bg-transparent border-none text-[11px] font-mono p-4 resize-none outline-none focus:ring-0 text-on-surface-variant/80 custom-scrollbar"></textarea>
+                            </div>
+                            <div class="flex flex-col bg-surface-container-low border border-primary/10 rounded-lg relative group">
+                                <div class="px-3 py-2 bg-primary/5 border-b border-primary/10 flex justify-between items-center">
+                                    <span class="text-[9px] font-bold text-primary uppercase tracking-widest">Neural Automation (Playwright)</span>
+                                    <button onclick="console_log_ui('Executing sandbox runner...', 'AI')" class="text-[8px] font-black text-primary hover:underline uppercase tracking-tighter">Run_Sandbox</button>
+                                </div>
+                                <textarea id="code-text-${taskIdx}" oninput="updateTcInMemory(${taskIdx}, 'automation_code')" class="flex-1 bg-transparent border-none text-[11px] font-mono p-4 resize-none outline-none focus:ring-0 text-primary-container/80 leading-relaxed custom-scrollbar"></textarea>
+                            </div>
+                        </div>
+                    `;
+                    resultsDiv.appendChild(card);
+                    
+                    // Set values safely after appending
+                    document.getElementById(`evidence-text-${taskIdx}`).value = initialTC.evidence;
+                    document.getElementById(`code-text-${taskIdx}`).value = initialTC.automation_code;
+                });
+
+                // Store results globally for tab switching
+                window.currentFastTrackResults = data.results.map(r => ({...r, selectedTcIdx: 0}));
+                
+                window.manualPush = async (taskIdx) => {
+                    const r = window.currentFastTrackResults[taskIdx];
+                    const tcIdx = r.selectedTcIdx || 0;
+                    const tc = r.test_cases[tcIdx];
+                    
+                    const cycleId = document.getElementById('cycle-id-input').value;
+                    const projectKey = document.getElementById('project-key-input').value;
+                    
+                    // Get current values from textareas (in case user edited them)
+                    const evidence = document.getElementById(`evidence-text-${taskIdx}`).value;
+                    const code = document.getElementById(`code-text-${taskIdx}`).value;
+                    
+                    const payload = {
+                        jira_id: tc.id || r.jira_test_case_id || "",
+                        description: tc.description || r.target,
+                        folder: tc.hierarchy ? tc.hierarchy.join('/') : "",
+                        project_key: projectKey,
+                        cycle_id: cycleId,
+                        status: r.status,
+                        evidence: evidence,
+                        automation_code: code,
+                        tester: r.tester || 'SENIOR SDET'
+                    };
+
+                    console_log_ui(`Manually pushing [${payload.jira_id || 'NEW'}] to Jira...`, "SYSTEM");
+                    
+                    try {
+                        const res = await fetch(`${API_BASE_URL}/push-to-jira`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        const result = await res.json();
+                        if (!res.ok) throw new Error(result.error || "Push failed");
+                        if (result.status === 'FAIL') throw new Error(result.message || "Push rejected by backend");
+                        
+                        showMessage(`Successfully pushed ${payload.jira_id || 'case'} to Jira!`);
+                    } catch (err) {
+                        showMessage(err.message, true);
+                    }
+                };
+
+                window.updateTcInMemory = (taskIdx, field) => {
+                    const r = window.currentFastTrackResults[taskIdx];
+                    const tcIdx = r.selectedTcIdx || 0;
+                    const val = document.getElementById(`${field === 'evidence' ? 'evidence' : 'code'}-text-${taskIdx}`).value;
+                    r.test_cases[tcIdx][field] = val;
+                };
+
+                window.switchTC = (taskIdx, tcIdx) => {
+                    const r = window.currentFastTrackResults[taskIdx];
+                    r.selectedTcIdx = tcIdx;
+                    const tc = r.test_cases[tcIdx];
+                    
+                    // Update View
+                    const detailGrid = document.getElementById(`tc-detail-grid-${taskIdx}`);
+                    detailGrid.classList.remove('hidden');
+                    
+                    document.getElementById(`evidence-text-${taskIdx}`).value = tc.evidence;
+                    document.getElementById(`code-text-${taskIdx}`).value = tc.automation_code;
+                    document.getElementById(`tc-id-display-${taskIdx}`).innerText = tc.id;
+                    document.getElementById(`tc-desc-display-${taskIdx}`).innerText = tc.description;
+                    
+                    // Update Tabs
+                    const taskTabs = document.querySelectorAll(`[id^="tab-${taskIdx}-"]`);
+                    taskTabs.forEach((t, i) => {
+                        const badge = document.getElementById(`tc-badge-${taskIdx}-${i}`);
+                        const desc = document.getElementById(`tc-desc-text-${taskIdx}-${i}`);
+                        
+                        if (i === tcIdx) {
+                            t.className = "tc-tab min-w-[280px] max-w-[320px] p-4 rounded-xl border cursor-pointer transition-all duration-300 bg-surface-container-highest border-primary/40 shadow-xl shadow-primary/5";
+                            if (badge) badge.className = "px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-primary text-on-primary";
+                            if (desc) desc.className = "text-[11px] font-bold text-on-surface line-clamp-2 leading-snug";
+                        } else {
+                            t.className = "tc-tab min-w-[280px] max-w-[320px] p-4 rounded-xl border cursor-pointer transition-all duration-300 bg-surface-container-low border-outline-variant/10 hover:border-outline-variant/30";
+                            if (badge) badge.className = "px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-surface-container-highest text-on-surface-variant";
+                            if (desc) desc.className = "text-[11px] font-bold text-on-surface-variant line-clamp-2 leading-snug";
+                        }
+                    });
+                    window.scrollTo(0,0);
+                    console_log_ui(`Switched to [${tc.id}]: ${tc.description.substring(0, 30)}...`, "SYSTEM");
+                };
+
+                // --- Selective Jira Push Logics ---
+                window.updateSelectedCount = () => {
+                    const selectors = document.querySelectorAll('.tc-selector:checked');
+                    const count = selectors.length;
+                    const actionsBar = document.getElementById('jira-push-actions');
+                    const countDisplay = document.getElementById('selected-count');
+                    
+                    if (count > 0) {
+                        actionsBar.classList.remove('hidden');
+                        countDisplay.innerText = `${count} case${count > 1 ? 's' : ''} selected for Jira synchronization`;
+                    } else {
+                        actionsBar.classList.add('hidden');
+                    }
+                };
+
+                document.getElementById('push-selected-jira-btn').addEventListener('click', async () => {
+                    const selectors = document.querySelectorAll('.tc-selector:checked');
+                    const pushBtn = document.getElementById('push-selected-jira-btn');
+                    const cycleId = document.getElementById('cycle-id-input').value;
+                    const projectKey = document.getElementById('project-key-input').value;
+                    
+                    if (selectors.length === 0) return;
+                    
+                    pushBtn.disabled = true;
+                    pushBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> PUSHING...';
+                    
+                    try {
+                        const selectedData = Array.from(selectors).map(s => {
+                            const taskIdx = s.dataset.task;
+                            const tcIdx = s.dataset.tc;
+                            const r = window.currentFastTrackResults[taskIdx];
+                            const tc = r.test_cases[tcIdx];
+                            return {
+                                jira_id: tc.id || r.jira_test_case_id || "",
+                                description: tc.description,
+                                folder: tc.hierarchy ? tc.hierarchy.join('/') : "",
+                                project_key: projectKey,
+                                cycle_id: cycleId,
+                                status: r.status,
+                                evidence: tc.evidence,
+                                automation_code: tc.automation_code
+                            };
+                        });
+                        
+                        console_log_ui(`Synchronizing ${selectedData.length} cases to Jira ${cycleId}...`, "SYSTEM");
+                        
+                        const res = await fetch(`${API_BASE_URL}/push-to-jira`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                cycle_id: cycleId,
+                                project_key: projectKey,
+                                test_cases: selectedData
+                            })
+                        });
+                        
+                        const result = await res.json();
+                        if (!res.ok) throw new Error(result.error || "Bulk push failed");
+                        
+                        const succeeded = result.results ? result.results.filter(r => r.status === 'PASS').length : 0;
+                        const failed = result.results ? result.results.length - succeeded : (result.status === 'FAIL' ? 1 : 0);
+                        
+                        if (failed > 0) {
+                            showMessage(`Jira Sync: ${succeeded} success, ${failed} failure. Check logs.`, true);
+                        } else {
+                            showMessage(`Successfully synchronized ${succeeded || selectedData.length} cases to Jira!`);
+                        }
+                        // Clear selection
+                        selectors.forEach(s => s.checked = false);
+                        updateSelectedCount();
+                        
+                    } catch (err) {
+                        showMessage(err.message, true);
+                    } finally {
+                        pushBtn.disabled = false;
+                        pushBtn.innerHTML = '<span class="material-symbols-outlined text-sm">publish</span> PUSH SELECTED TO JIRA';
+                    }
+                });
+                fetchExecutionHistory();
+             } catch (err) {
+                showMessage(err.message, true);
+             } finally {
+                submitBtn.disabled = false;
+             }
+        });
+
+        // 5. Playground Retrieval
+        document.getElementById('retrieval-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultsDiv = document.getElementById('retrieval-results');
+            resultsDiv.innerHTML = '<div class="text-[10px] font-mono text-primary animate-pulse uppercase tracking-widest">[PROCESS]: SEMANTIC CLASSIFICATION INITIATED...</div>';
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/retrieve`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        query: document.getElementById('query-input').value,
+                        top_k: parseInt(document.getElementById('top-k-input').value)
+                    })
+                });
+                const data = await res.json();
+                resultsDiv.innerHTML = '';
+                data.chunks.forEach((c, idx) => {
+                    const block = document.createElement('div');
+                    block.className = 'bg-surface-container-low p-5 rounded-xl border border-outline-variant/10 group hover:border-primary/30 transition-all';
+                    block.innerHTML = `
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-[9px] font-mono text-primary-fixed uppercase tracking-widest">Vector Node ${idx+1} (Score: ${c.score.toFixed(3)})</span>
+                            <span class="text-[9px] font-mono text-outline-variant">${c.metadata.source || 'LTM_ARCHIVE'}</span>
+                        </div>
+                        <div class="text-xs text-on-surface-variant leading-relaxed font-body">${c.text}</div>
+                    `;
+                    resultsDiv.appendChild(block);
+                });
+            } catch (err) {
+                showMessage(err.message, true);
+            }
+        });
+
+        // --- Initialization ---
+        fetchSystemInfo();
+        fetchModels();
+        fetchExecutionHistory();
+        setInterval(fetchSystemInfo, 30000);
+        setInterval(fetchExecutionHistory, 30000);
+        setInterval(fetchModels, 60000);
+
+        console_log_ui("Synthetic Architect UI v2.4 initialized.", "SUCCESS");
+        console_log_ui("[DASHBOARD]: Neural connectivity stable.", "SYSTEM");
+
+    </script>
+</body>
+</html>
