@@ -1,0 +1,7 @@
+name: "Browser Navigation Best Practices"
+description: "How to correctly manipulate the browser tool."
+instructions:
+  - "Rule 1: Always wait for the page to load completely before interacting with elements."
+  - "Rule 2: Prioritize using explicit labels or semantic HTML selectors over fragile XPath if available."
+  - "Rule 3: If an element is within an iframe, ensure you switch context to the iframe first."
+  - "Rule 4: In case of persistent overlay popups, try dismissing them before attempting your main click action."
