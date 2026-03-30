@@ -1,0 +1,201 @@
+import asyncio
+from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+from mcp.client.sse import sse_client
+from mcp import types
+from urllib.parse import urlparse
+# from app.config import MCP_TOOLS
+import json
+from typing import List, Dict, Any
+
+# mcp_tools = json.loads(MCP_TOOLS)
+
+class MCPClient:
+    """
+    Một client MCP hợp nhất, có thể tự động chọn giao thức (HTTP Streaming hoặc SSE)
+    dựa trên đường dẫn (path) của URL.
+    - /mcp -> HTTP Streaming
+    - /sse -> Server-Sent Events (SSE)
+    """
+    def __init__(self, server_url: str):
+        if not server_url:
+            raise ValueError("MCP server URL cannot be empty.")
+        self.server_url = server_url
+        
+        # << 1. TỰ ĐỘNG PHÁT HIỆN GIAO THỨC DỰA TRÊN URL >>
+        parsed_url = urlparse(server_url)
+        if parsed_url.path == "/mcp":
+            self.protocol_type = "mcp"
+        elif parsed_url.path == "/sse":
+            self.protocol_type = "sse"
+        else:
+            raise ValueError(f"Unsupported URL path: '{parsed_url.path}'. Must be '/mcp' or '/sse'.")
+
+        self._client = None
+        self._session = None
+        self.is_initialized = False
+        print(f"Unified client initialized for URL '{server_url}' (Detected Protocol: {self.protocol_type.upper()})")
+
+
+    async def __aenter__(self):
+        """
+        Khởi tạo kết nối đến server sử dụng giao thức đã được phát hiện.
+        """
+        print(f"🔌 Connecting to MCP server via {self.protocol_type.upper()}...")
+
+        try:
+            # << 2. LOGIC ĐIỀU KIỆN ĐỂ CHỌN CLIENT PHÙ HỢP >>
+            if self.protocol_type == "mcp":
+                self._client = streamablehttp_client(self.server_url)
+                self._read_stream, self._write_stream, _ = await self._client.__aenter__()
+            elif self.protocol_type == "sse":
+                self._client = sse_client(self.server_url)
+                self._read_stream, self._write_stream = await self._client.__aenter__()
+        except Exception as e:
+            print(f"❌ ERROR initializing MCP client: {e}")
+            raise
+        
+        # Phần còn lại giữ nguyên
+        self._session = ClientSession(read_stream=self._read_stream, write_stream=self._write_stream)
+        await self._session.__aenter__()
+        await self._session.initialize()
+        self.is_initialized = True
+        print(f"✅ MCP session (via {self.protocol_type.upper()}) initialized successfully.")
+        
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self._session:
+            await self._session.__aexit__(exc_type, exc_val, exc_tb)
+        if self._client:
+            await self._client.__aexit__(exc_type, exc_val, exc_tb)
+        self.is_initialized = False
+        print(f"🔌 MCP connection (via {self.protocol_type.upper()}) closed.")
+
+    async def list_tools(self) -> list:
+        if not self.is_initialized:
+            raise ConnectionError("Session not initialized.")
+        print(f"🛠️ Fetching available tools via {self.protocol_type.upper()}...")
+        tool_list = await self._session.list_tools()
+        tools = [t.name for t in tool_list.tools]
+        print(f"🛠️ Available Tools: {tools}")
+        return tool_list
+    
+    async def list_tools_json(self) -> str:
+        """
+        Lists the available tools in JSON format.
+
+        Returns:
+            A JSON string of the available tools.
+        """
+        tools = await self.list_tools()
+        return json.dumps([tool.name for tool in tools.tools], indent=2)
+
+    async def list_openai_tools(self) -> List[Dict[str, Any]]:
+        """
+        Returns a list of OpenAI-compatible tools.
+
+        Returns:
+            A list of dictionaries representing the tools.
+        """
+        openai_formatted_tools = []
+        tools = await self.list_tools()
+    
+        # Process MCP (remote) tools
+        for tool in tools.tools:
+            openai_formatted_tools.append({
+                "type": "function",
+                "function": {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "parameters": tool.inputSchema,
+                },
+            })
+
+        return openai_formatted_tools
+
+    async def execute_tool(self, tool_name: str, parameters: dict) -> dict:
+        """
+        Executes a specific tool on the MCP server.
+
+        Args:
+            tool_name: The name of the tool to execute.
+            parameters: A dictionary of parameters for the tool.
+
+        Returns:
+            A dictionary containing the result of the tool execution.
+        """
+        if not self.is_initialized:
+            raise ConnectionError("Session is not initialized.")
+        
+        parsed_params = parameters
+        if isinstance(parameters, str):
+            try:
+                parsed_params = json.loads(parameters)
+            except json.JSONDecodeError:
+                error_msg = f"Invalid JSON format for parameters: {parameters}"
+                # print(f"❌ ERROR: {error_msg}")
+                return {"status": "error", "details": error_msg}
+            
+        # print(f"🚀 Executing MCP tool '{tool_name}' with params: {parsed_params}")
+        try:
+            # Correctly call the tool using call_tool and pass parameters as 'arguments'
+            result = await self._session.call_tool(tool_name, arguments=parsed_params)
+            
+            # The primary result is often in structuredContent
+            # print(result)
+
+            # print("Debug: Calling tool with parameters:", parsed_params)
+
+            # If no structured result, fallback to the first content block
+            if result and not result.isError:
+                content_block = result.content[0]
+                if isinstance(content_block, types.TextContent):
+                    final_result = content_block.text
+                # You could add checks for other types like JsonContent here
+                else:
+                    # As a generic fallback, convert the block to a string
+                    final_result = str(content_block)
+
+                # print(f"✔️ MCP Tool '{tool_name}' result: {final_result}")
+                # We wrap the result in a status dictionary for consistency with the agent's expectations
+                return {"status": "success", "details": final_result}
+            else:
+                error_msg = f"Tool '{tool_name}' execution failed"
+                # print(f"❌ ERROR: {error_msg}")
+                return {"status": "error", "details": error_msg}
+        except Exception as e:
+            # print(f"❌ ERROR executing MCP tool '{tool_name}': {e}")
+            return {"status": "error", "details": str(e)}
+
+async def main():
+    """Hàm chính để chạy thử nghiệm client hợp nhất."""
+    
+    # Định nghĩa các URL cho cả hai giao thức
+    mcp_url_http = "http://localhost:8931/mcp"
+    mcp_url_sse = "http://localhost:8931/sse"
+
+    print("=========================================")
+    print("===== TESTING WITH HTTP STREAMING (/mcp) =====")
+    print("=========================================")
+    try:
+        async with MCPClient(mcp_url_http) as client_http:
+            tools = await client_http.list_openai_tools()
+            print("Available OpenAI Tools:", json.dumps(tools, indent=2))
+    except Exception as e:
+        print(f"Could not connect or run test for /mcp: {e}")
+
+    print("\n" * 2)
+
+    print("=========================================")
+    print("===== TESTING WITH SSE (/sse) =====")
+    print("=========================================")
+    try:
+        async with MCPClient(mcp_url_sse) as client_sse:
+            tools = await client_sse.list_openai_tools()
+            print("Available OpenAI Tools:", json.dumps(tools, indent=2))
+    except Exception as e:
+        print(f"Could not connect or run test for /sse: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
