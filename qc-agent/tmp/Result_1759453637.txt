@@ -1,0 +1,37 @@
+# Test Case: FPT AI Marketplace Login and Navigation
+
+## Overview
+### Task
+Navigate to the FPT AI Marketplace, log in using provided FPT ID credentials, and verify successful access to the marketplace homepage.
+
+### Target
+Successfully authenticate with FPT ID and access the main marketplace interface.
+
+## Test Process
+### Steps process
+1. **Navigate to Marketplace Homepage**
+   - Target: Load the FPT AI Marketplace homepage
+   - Status: Success
+
+2. **Initiate Login Flow**
+   - Target: Click the 'Sign in/Sign up' button to open authentication options
+   - Status: Success
+
+3. **Select FPT ID Authentication**
+   - Target: Choose 'Continue with FPT ID' from the login options
+   - Status: Success
+
+4. **Enter Credentials**
+   - Target: Input provided username and password
+   - Status: Success
+
+5. **Submit Login Form**
+   - Target: Complete authentication by submitting credentials
+   - Status: Success
+
+### Final result
+Status: Success
+The test successfully completed all steps, navigating to the FPT AI Marketplace, logging in with FPT ID credentials, and returning to the marketplace homepage indicating successful authentication.
+
+## Analysis
+This test demonstrates a complete successful login flow for the FPT AI Marketplace using FPT ID credentials. The process was straightforward with no errors encountered during navigation or authentication. The UI clearly presented login options and credential fields. Future tests could include edge cases like invalid credentials or alternative authentication methods.
