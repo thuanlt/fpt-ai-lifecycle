@@ -1,0 +1,23 @@
+{
+    "mcp_servers": {
+        "stitch": {
+            "protocol": "http",
+            "url": "https://stitch.googleapis.com/mcp",
+            "headers": {
+                "X-Goog-Api-Key": "AQ.Ab8RN6K2FBJKode7p1C7UGXFjUxTruwaQ-i_BrYC6dX9yAjySg"
+            }
+        },
+        "playwright": {
+            "protocol": "direct",
+            "file": "src/tools/server/playwright_mcp.py"
+        },
+        "bash": {
+            "protocol": "direct",
+            "file": "src/tools/server/bash_mcp.py"
+        },
+        "filesystem": {
+            "protocol": "direct",
+            "file": "src/tools/server/filesystem_mcp.py"
+        }
+    }
+}
