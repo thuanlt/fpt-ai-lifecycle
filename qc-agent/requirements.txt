@@ -1,0 +1,11 @@
+openai
+python-dotenv
+requests
+rich
+chromadb
+sentence-transformers
+pydantic
+Jinja2
+mcp
+flask[async]
+asgiref
