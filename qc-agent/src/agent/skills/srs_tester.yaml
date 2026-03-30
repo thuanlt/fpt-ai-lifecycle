@@ -1,0 +1,8 @@
+name: "SRS Test Case Writing Strategy"
+description: "Rules for generating Markdown test cases strictly adhering to the provided documentation format."
+instructions:
+  - "Format Structure: Start with # [Tên chức năng], then outline ## [Section] (e.g., UI/UX, Validation, Func, API), ### [Group]."
+  - "Test Case ID Format: Focus on [Component][Element] Description format for ID."
+  - "Steps and Expected Results: Each step MUST have at least 1 expected result. Align indentation carefully."
+  - "Expected result prefix: First result MUST be '- => ', and subsequent results MUST be '=> ' (same indentation)."
+  - "Test Case Mapping: Map Required fields to empty input tests, Max Length to exceeded limits, and Activity/Business Rules to functional flow tests."
