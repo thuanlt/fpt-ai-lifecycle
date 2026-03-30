@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+      background-color: #131313;
+      color: #e5e2e1;
+      font-family: 'Inter', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .mono-text { font-family: 'JetBrains Mono', monospace; }
+    .headline-text { font-family: 'Space Grotesk', sans-serif; }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #1c1b1b; }
+    ::-webkit-scrollbar-thumb { background: #3b494c; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00e5ff; }
+
+    /* Custom Glass Effect */
+    .glass-panel {
+      background: rgba(53, 53, 52, 0.6);
+      backdrop-filter: blur(12px);
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-tertiary": "#00390a",
+            "on-primary-fixed-variant": "#004f58",
+            "on-tertiary-fixed-variant": "#005313",
+            "background": "#131313",
+            "tertiary": "#b6ffae",
+            "surface-bright": "#393939",
+            "on-primary-fixed": "#001f24",
+            "inverse-on-surface": "#313030",
+            "surface-container": "#201f1f",
+            "on-tertiary-fixed": "#002204",
+            "on-secondary-container": "#aab7bf",
+            "outline-variant": "#3b494c",
+            "secondary-fixed": "#d7e4ec",
+            "tertiary-container": "#82e780",
+            "on-secondary-fixed": "#111d23",
+            "on-tertiary-container": "#00681a",
+            "surface-container-low": "#1c1b1b",
+            "on-secondary-fixed-variant": "#3c494f",
+            "on-primary-container": "#00626e",
+            "inverse-surface": "#e5e2e1",
+            "secondary-fixed-dim": "#bbc8d0",
+            "primary-fixed": "#9cf0ff",
+            "surface-variant": "#353534",
+            "surface": "#131313",
+            "error": "#ffb4ab",
+            "surface-container-high": "#2a2a2a",
+            "inverse-primary": "#006875",
+            "surface-tint": "#00daf3",
+            "primary": "#c3f5ff",
+            "secondary-container": "#3c494f",
+            "primary-container": "#00e5ff",
+            "surface-container-highest": "#353534",
+            "on-error-container": "#ffdad6",
+            "surface-dim": "#131313",
+            "secondary": "#bbc8d0",
+            "on-secondary": "#263238",
+            "outline": "#849396",
+            "on-primary": "#00363d",
+            "on-surface": "#e5e2e1",
+            "tertiary-fixed": "#94f990",
+            "error-container": "#93000a",
+            "primary-fixed-dim": "#00daf3",
+            "tertiary-fixed-dim": "#78dc77",
+            "surface-container-lowest": "#0e0e0e",
+            "on-surface-variant": "#bac9cc",
+            "on-error": "#690005",
+            "on-background": "#e5e2e1"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+        },
+      },
+    }
+  </script>
+</head>
+<body class="overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#131313] dark:bg-[#131313] shadow-[0_0_20px_rgba(0,218,243,0.06)]">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold text-[#e5e2e1] tracking-tighter headline-text">KINETIC INTELLIGENCE</span>
+<span class="h-4 w-px bg-outline-variant opacity-30"></span>
+<span class="text-[#00E5FF] font-bold border-b-2 border-[#00E5FF] headline-text tracking-tight antialiased px-2">Fast Track</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant/20">
+<span class="material-symbols-outlined text-tertiary text-sm mr-2" style="font-variation-settings: 'FILL' 1;">sensors</span>
+<span class="text-[10px] mono-text uppercase tracking-widest text-on-surface-variant">System: Optimal</span>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-[#3b494c] hover:bg-[#353534] transition-colors duration-200 active:scale-95 transition-transform"><span class="material-symbols-outlined">hub</span></button>
+<button class="p-2 text-[#3b494c] hover:bg-[#353534] transition-colors duration-200 active:scale-95 transition-transform"><span class="material-symbols-outlined">database</span></button>
+<button class="p-2 text-[#3b494c] hover:bg-[#353534] transition-colors duration-200 active:scale-95 transition-transform"><span class="material-symbols-outlined">account_circle</span></button>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-4rem)] flex flex-col py-4 bg-[#1c1b1b] dark:bg-[#1c1b1b] w-64 border-r border-outline-variant/10">
+<div class="px-6 mb-8">
+<div class="text-lg font-black text-[#00E5FF] headline-text">SYNTHETIC ARCHITECT</div>
+<div class="text-[10px] mono-text opacity-50 text-[#e5e2e1]">v2.4.0-STABLE</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-[#e5e2e1] opacity-70 hover:bg-[#2a2a2a] hover:opacity-100 transition-all font-['Inter'] text-sm font-medium rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+      </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#e5e2e1] opacity-70 hover:bg-[#2a2a2a] hover:opacity-100 transition-all font-['Inter'] text-sm font-medium rounded-lg" href="#">
+<span class="material-symbols-outlined">storage</span> Memory
+      </a>
+<a class="flex items-center gap-3 px-3 py-2 bg-[#353534] text-[#00E5FF] border-r-4 border-[#00E5FF] rounded-r-lg font-['Inter'] text-sm font-medium active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined">route</span> Fast Track
+      </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#e5e2e1] opacity-70 hover:bg-[#2a2a2a] hover:opacity-100 transition-all font-['Inter'] text-sm font-medium rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+      </a>
+</nav>
+<div class="mt-auto px-4 space-y-4">
+<button class="w-full py-2.5 bg-primary-container text-on-primary font-bold text-xs tracking-widest rounded-lg hover:brightness-110 active:scale-95 transition-all">
+        INITIALIZE AGENT
+      </button>
+<div class="pt-4 border-t border-outline-variant/10 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-[#e5e2e1] opacity-50 hover:opacity-100 text-xs transition-all" href="#">
+<span class="material-symbols-outlined text-sm">sensors</span> System Health
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#e5e2e1] opacity-50 hover:opacity-100 text-xs transition-all" href="#">
+<span class="material-symbols-outlined text-sm">terminal</span> Logs
+        </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 h-screen overflow-hidden flex flex-col bg-surface">
+<!-- Workspace Header / Jira Panel -->
+<section class="h-20 bg-surface-container-low border-b border-outline-variant/10 flex items-center px-8 justify-between shrink-0">
+<div class="flex items-center gap-6">
+<div class="group relative">
+<label class="text-[10px] uppercase tracking-tighter text-outline font-bold mb-1 block">Jira Project</label>
+<div class="flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded border border-outline-variant/20 hover:border-primary/40 cursor-pointer transition-colors">
+<span class="text-xs font-semibold">QC-AGENT-CORE</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<div class="group relative">
+<label class="text-[10px] uppercase tracking-tighter text-outline font-bold mb-1 block">Test Cycle</label>
+<div class="flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded border border-outline-variant/20 hover:border-primary/40 cursor-pointer transition-colors">
+<span class="text-xs font-semibold">SPRINT-24-REGRESSION-B</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col items-center mt-5">
+<button class="flex items-center gap-2 px-4 py-1.5 bg-surface-container-highest border border-outline-variant/30 text-xs font-bold hover:bg-surface-bright transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">sync</span>
+    SYNC CYCLE
+  </button>
+<span class="text-[8px] mono-text text-outline-variant mt-1 opacity-60">LAST SYNCED: 2M AGO</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-primary-container flex items-center justify-center text-[10px] font-black text-on-primary" title="Senior Tester">ST</div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-tertiary-container flex items-center justify-center text-[10px] font-black text-on-tertiary-container" title="UI Specialist">US</div>
+</div>
+<div class="text-right">
+<div class="text-[10px] font-bold text-outline uppercase tracking-widest">Workspace Status</div>
+<div class="flex items-center justify-end gap-1.5">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full animate-pulse"></span>
+<span class="text-xs font-mono text-tertiary uppercase">Ready</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Workspace Area -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Sidebar: Test Case Explorer -->
+<section class="w-72 border-r border-outline-variant/10 bg-surface flex flex-col overflow-hidden">
+<div class="p-4 border-b border-outline-variant/5">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-xs font-black uppercase tracking-widest text-outline">DFS Explorer</h3>
+<span class="text-[10px] mono-text text-primary">Scanned: 42 Nodes</span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-sm opacity-40">search</span>
+<input class="w-full bg-surface-container-lowest border-none text-[11px] py-1.5 pl-8 focus:ring-1 focus:ring-primary rounded" placeholder="Filter cases..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-1">
+<!-- DFS Node: Parent -->
+<div class="space-y-1">
+<div class="flex items-center gap-2 p-2 hover:bg-surface-container-low rounded cursor-pointer group">
+<span class="material-symbols-outlined text-sm text-outline group-hover:text-primary">folder_open</span>
+<span class="text-xs font-medium">Authentication Flow</span>
+</div>
+<!-- Child Nodes -->
+<div class="ml-4 pl-4 border-l border-outline-variant/20 space-y-1">
+<div class="flex items-center gap-2 p-1.5 bg-surface-container-highest/40 rounded border border-primary/20">
+<span class="material-symbols-outlined text-[14px] text-tertiary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[11px] text-on-surface truncate">TC-102: Login Success</span>
+</div>
+<div class="flex items-center gap-2 p-1.5 hover:bg-surface-container-low rounded cursor-pointer group">
+<span class="material-symbols-outlined text-[14px] text-error">error</span>
+<span class="text-[11px] text-on-surface-variant truncate">TC-103: Multi-Factor Fail</span>
+</div>
+<div class="flex items-center gap-2 p-1.5 hover:bg-surface-container-low rounded cursor-pointer group">
+<span class="material-symbols-outlined text-[14px] text-outline">circle</span>
+<span class="text-[11px] text-on-surface-variant truncate">TC-104: Password Reset</span>
+</div>
+</div>
+</div>
+<!-- Dependencies Visualization (Floating Badge concept) -->
+<div class="mt-6 px-2">
+<h4 class="text-[10px] font-bold text-outline uppercase tracking-widest mb-3">Linked Dependencies</h4>
+<div class="p-3 bg-surface-container-lowest rounded-lg border border-outline-variant/10 space-y-3">
+<div class="flex items-start gap-2">
+<div class="mt-1 w-1 h-1 rounded-full bg-primary-fixed-dim"></div>
+<div>
+<div class="text-[10px] text-primary-fixed font-bold">PRECONDITION</div>
+<div class="text-[11px] text-on-surface-variant leading-tight">Environment: STAGE_01 is active.</div>
+</div>
+</div>
+<div class="flex items-start gap-2">
+<div class="mt-1 w-1 h-1 rounded-full bg-tertiary"></div>
+<div>
+<div class="text-[10px] text-tertiary font-bold">BLOCKER</div>
+<div class="text-[11px] text-on-surface-variant leading-tight">Depends on TC-099 API response.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Center: Split Editor -->
+<section class="flex-1 flex flex-col overflow-hidden">
+<!-- Editor Toolbar -->
+<div class="h-10 border-b border-outline-variant/10 flex items-center justify-between px-4 bg-surface-container-low">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-bold text-outline">SCRIPT:</span>
+<span class="text-[10px] mono-text text-primary-fixed">auth_flow_v2.test.js</span>
+</div>
+<span class="h-3 w-px bg-outline-variant/20"></span>
+<div class="flex gap-1">
+<button class="px-2 py-0.5 rounded text-[10px] font-bold bg-surface-container-highest text-on-surface-variant">JS</button>
+<button class="px-2 py-0.5 rounded text-[10px] font-bold text-outline">PY</button>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-tertiary hover:bg-tertiary/10 rounded transition-all">
+<span class="material-symbols-outlined text-sm">play_arrow</span> RUN LOCAL
+            <span class="material-symbols-outlined text-sm ml-1">expand_more</span></button>
+</div>
+</div>
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Side: AI Markdown Editor -->
+<div class="w-1/2 border-r border-outline-variant/10 bg-surface-container-lowest p-6 overflow-y-auto">
+<div class="flex items-center gap-2 mb-6 w-full">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg">psychology</span>
+<h2 class="text-xs font-bold headline-text text-on-surface-variant">AI GENERATED ARCHITECTURE</h2><div class="ml-auto flex gap-2">
+<button class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span> EDIT
+  </button>
+<button class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">format_align_left</span> FORMAT
+  </button>
+</div>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<h4 class="text-primary text-[11px] mono-text"># TestCase_Definition</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  The following script implements a depth-first verification of the login sequence, handling async state transitions and edge cases for the OAuth2 provider.
+                </p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-lg border-l-4 border-tertiary">
+<div class="text-[10px] font-bold text-tertiary uppercase mb-1">SDET Note</div>
+<p class="text-xs text-on-surface-variant italic">
+                  "Auto-detected shadow-dom element on login button. Applied specialized selector strategy."
+                </p>
+</div>
+<div class="space-y-3">
+<h4 class="text-primary text-[11px] mono-text">## Steps</h4>
+<ul class="space-y-2 list-none text-xs text-on-surface-variant">
+<li class="flex gap-2">
+<span class="text-primary opacity-50">01</span>
+<span>Navigate to `base_url` /auth/login</span>
+</li>
+<li class="flex gap-2">
+<span class="text-primary opacity-50">02</span>
+<span>Inject test credentials from `vault_id: 882`</span>
+</li>
+<li class="flex gap-2">
+<span class="text-primary opacity-50">03</span>
+<span>Wait for network idle (2000ms timeout)</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Right Side: Syntax Preview -->
+<div class="w-1/2 bg-surface-container-low overflow-hidden flex flex-col">
+<div class="p-4 flex-1 overflow-y-auto font-mono text-xs leading-6">
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">1</div>
+<div><span class="text-secondary">import</span> { <span class="text-primary">test</span>, <span class="text-primary">expect</span> } <span class="text-secondary">from</span> <span class="text-tertiary">'@playwright/test'</span>;</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">2</div>
+<div> </div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">3</div>
+<div><span class="text-primary">test</span>(<span class="text-tertiary">'should verify auth flow'</span>, <span class="text-secondary">async</span> ({ page }) <span class="text-secondary">=&gt;</span> {</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">4</div>
+<div class="pl-4"><span class="text-secondary">await</span> page.<span class="text-primary">goto</span>(<span class="text-tertiary">'https://qc-agent.io/login'</span>);</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">5</div>
+<div class="pl-4"><span class="text-secondary">await</span> page.<span class="text-primary">locator</span>(<span class="text-tertiary">'input[name="user"]'</span>).<span class="text-primary">fill</span>(<span class="text-secondary">process</span>.env.TEST_USER);</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">6</div>
+<div class="pl-4"><span class="text-secondary">await</span> page.<span class="text-primary">locator</span>(<span class="text-tertiary">'input[name="pass"]'</span>).<span class="text-primary">fill</span>(<span class="text-secondary">process</span>.env.TEST_PASS);</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">7</div>
+<div class="pl-4"><span class="text-secondary">await</span> page.<span class="text-primary">click</span>(<span class="text-tertiary">'button[type="submit"]'</span>);</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">8</div>
+<div class="pl-4"> </div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">9</div>
+<div class="pl-4"><span class="text-secondary">const</span> dashboard = page.<span class="text-primary">locator</span>(<span class="text-tertiary">'.main-dashboard'</span>);</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">10</div>
+<div class="pl-4"><span class="text-secondary">await</span> <span class="text-primary">expect</span>(dashboard).<span class="text-primary">toBeVisible</span>({ timeout: <span class="text-secondary">10000</span> });</div>
+</div>
+<div class="flex gap-4">
+<div class="text-outline text-right w-6 select-none opacity-30">11</div>
+<div>});</div>
+</div>
+<!-- Floating AI Suggestion -->
+<div class="m-6 glass-panel rounded-lg border border-primary/20 p-4 relative group">
+<div class="absolute -top-2 -right-2 bg-primary-container text-on-primary-container text-[8px] font-black px-2 py-0.5 rounded-full">OPTIMIZATION</div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+<span class="text-[10px] font-bold text-primary uppercase">Heuristic Suggestion</span>
+</div>
+<p class="text-[11px] text-on-surface leading-snug">
+                  Added `toBeVisible` with extended timeout to handle potential cold-starts in the staging environment.
+                </p>
+<div class="mt-3 flex gap-2">
+<button class="px-3 py-1 bg-primary text-on-primary text-[10px] font-bold rounded bg-[#00E5FF] text-black">APPLY TO SCRIPT</button>
+<button class="px-3 py-1 bg-surface-container-highest text-[10px] font-bold rounded border border-outline-variant text-on-surface">DISMISS</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Push Action Bar -->
+<footer class="h-16 bg-[#1c1b1b] border-t border-outline-variant/20 flex items-center justify-between px-8 shrink-0">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim text-sm">cloud_sync</span>
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">Git Status:</span>
+<span class="text-xs font-mono text-on-surface-variant">feature/auth-verification-dfs</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm">verified</span>
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">QC Status:</span>
+<span class="text-xs font-mono text-tertiary">VAL_SUCCESS</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="text-right"><div class="inline-flex items-center px-2 py-0.5 rounded-full bg-tertiary/10 border border-tertiary/20 mb-1">
+<span class="w-1 h-1 bg-tertiary rounded-full mr-1.5"></span>
+<span class="text-[8px] font-black text-tertiary uppercase tracking-tighter">READY TO SHIP</span>
+</div>
+<div class="text-[9px] font-black text-outline uppercase mb-0.5">Integration: Jira</div>
+<div class="text-[11px] font-mono text-primary-container">LINKED_TO: QC-4022</div>
+</div>
+<button class="px-4 py-2.5 border border-outline-variant text-on-surface font-bold text-xs tracking-widest rounded hover:bg-surface-container-highest transition-all">
+  REVIEW EVIDENCE
+</button><button class="px-8 py-2.5 bg-primary-container text-on-primary font-black text-xs tracking-[0.2em] rounded flex items-center gap-3 hover:brightness-110 hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all">
+          PUSH TO JIRA
+          <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+</footer>
+</main>
+<!-- Visual Polish Overlay (Scanline effect) -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-[100]"></div>
+</body></html>
