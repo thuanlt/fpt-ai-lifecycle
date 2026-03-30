@@ -1,0 +1,45 @@
+{
+  "testData": [],
+  "componentId": "14539",
+  "priority": {
+    "isDefault": false,
+    "color": "#ff0000",
+    "name": "High",
+    "index": 0,
+    "id": 51,
+    "projectId": 15234
+  },
+  "majorVersion": 1,
+  "labels": [
+    "Sprint_1"
+  ],
+  "archived": false,
+  "latestVersion": true,
+  "testScript": {
+    "stepByStepScript": {
+      "id": 1135,
+      "steps": [
+        {
+          "expectedResult": "Đối với các trạng thái<br />- Pending<br />- Initiated<br />- Running<br />- Finishing<br />Thì ko có action START",
+          "index": 0,
+          "description": "1. Tại MH DS của các trạng thái - Pending - Initiated - Running - Finishing<br />2. Click vào action START<br />3. Quan sát",
+          "id": 1569
+        }
+      ]
+    }
+  },
+  "name": "Kiểm tra các trạng thái ko hợp lệ",
+  "id": 1145,
+  "projectId": 15234,
+  "parameters": [],
+  "key": "NCPP-T301",
+  "status": {
+    "isDefault": false,
+    "color": "#3abb4b",
+    "i18nKey": "TESTCASE.STATUS.APPROVED",
+    "name": "Approved",
+    "index": 2,
+    "id": 44,
+    "projectId": 15234
+  }
+}
