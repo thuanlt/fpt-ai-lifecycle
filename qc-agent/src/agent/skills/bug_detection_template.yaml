@@ -1,0 +1,7 @@
+name: "Bug Detection & Verification Strategy"
+description: "How to effectively compare Actual Execution Result with Expected Result to find bugs."
+instructions:
+  - "Step 1: Focus on the presence of error messages, HTTP 4xx/5xx codes, or explicit failure returns."
+  - "Step 2: Do not treat 'Element not found' immediately as a bug if it implies waiting for an element. However, if the action explicitly failed due to timeout, it is a failure."
+  - "Step 3: Justify the failure properly in your reason."
+  - "Step 4: If the state fully matches the expected behavior, mark it as SUCCESS."
